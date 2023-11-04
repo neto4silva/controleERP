@@ -11,71 +11,64 @@
 <script>
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-import ProdutoService from "@/services/produto-service"; // Certifique-se de importar o serviço de produtos correto
+import ClienteService from "@/services/cliente-service";
 import RelatorioCard from "../components/RelatorioCard.vue"
 
 export default {
-  name: "Rel-Produtos",
+  name: "relatoriosClientes",
   components: {
     RelatorioCard
   },
   data() {
     return {
-      produtos: [],
       relatorios: [
         {
-          nome: "Relatório de Produtos por Preço",
-          descricao: "Este relatório exibe os produtos ordenados por preço.",
-          funcao: this.gerarRelatorioProdutosPreco,
-          icone: "mdi-currency-usd",
+          nome: "Relatório de Clientes por Nome",
+          descricao: "Este relatório exibe os clientes ordenados por nome.",
+          funcao: this.gerarRelatorioClientesNome,
+          icone: "mdi-account",
         },
         {
-          nome: "Relatório de Produtos por Categoria",
-          descricao: "Este relatório exibe os produtos ordenados por categoria.",
-          funcao: this.gerarRelatorioProdutosCategoria,
-          icone: "mdi-format-list-bulleted",
+          nome: "Relatório de Clientes por Email",
+          descricao: "Este relatório exibe os clientes ordenados por email.",
+          funcao: this.gerarRelatorioClientesEmail,
+          icone: "mdi-email",
         },
         {
-          nome: "Relatório de Produtos em Estoque",
-          descricao: "Este relatório exibe os produtos em estoque.",
-          funcao: this.gerarRelatorioProdutosEstoque,
-          icone: "mdi-package-variant-closed",
+          nome: "Relatório de Clientes por CPF",
+          descricao: "Este relatório exibe os clientes ordenados por CPF.",
+          funcao: this.gerarRelatorioClientesCPF,
+          icone: "mdi-account-filter-outline",
         },
         {
-          nome: "Relatório de Produtos Esgotados",
-          descricao: "Este relatório exibe os produtos esgotados.",
-          funcao: this.gerarRelatorioProdutosEsgotados,
-          icone: "mdi-package-variant",
+          nome: "Relatório de Clientes por Telefone",
+          descricao: "Este relatório exibe os clientes ordenados por telefone.",
+          funcao: this.gerarRelatorioClientesTelefone,
+          icone: "mdi-phone",
         },
       ],
     };
   },
-  created() {
-    this.obterProdutos();
-  },
   methods: {
-    async obterProdutos() {
-      try {
-        const response = await ProdutoService.obterProdutos(); // Certifique-se de chamar o método correto do serviço de produtos
-        this.produtos = response.data;
-      } catch (error) {
-        console.error("Erro ao obter produtos:", error);
-      }
-    },
-
-    // Métodos para gerar relatórios
-    async gerarRelatorioProdutosPreco() {
+    async gerarRelatorioClientesNome() {
+      const clientes = await ClienteService.obterTodos();
       const doc = new jsPDF();
-      doc.text('Relatório de Produtos por Preço', 10, 10);
-      const data = this.produtos.slice().sort((a, b) => a.valor - b.valor);
-      const columns = ['ID', 'Nome', 'Preço', 'Categoria', 'Estoque'];
-      const rows = data.map((produto) => [
-        produto.id,
-        produto.nome,
-        `R$ ${produto.valor.toFixed(2)}`,
-        produto.categoria,
-        produto.quantidadeEstoque,
+
+      doc.text('Relatório de Clientes por Nome', 10, 10);
+
+      const data = clientes.data
+        .sort((a, b) => a.nome.localeCompare(b.nome));
+
+      const columns = ['ID', 'Nome', 'Email', 'CPF', 'Telefone'];
+
+      const rows = data.map((cliente) => [
+        cliente.id,
+        cliente.nome,
+        cliente.email,
+        cliente.cpfOuCnpj,
+        cliente.telefone,
       ]);
+
       doc.autoTable({
         head: [columns],
         body: rows,
@@ -84,21 +77,28 @@ export default {
         tableWidth: 'auto',
         margin: { top: 25 },
       });
-      doc.save('RelatorioProdutosPreco.pdf');
-    },
 
-    async gerarRelatorioProdutosCategoria() {
+      doc.save('RelatorioClientesNome.pdf');
+    },
+    async gerarRelatorioClientesEmail() {
+      const clientes = await ClienteService.obterTodos();
       const doc = new jsPDF();
-      doc.text('Relatório de Produtos por Categoria', 10, 10);
-      const data = this.produtos.slice().sort((a, b) => a.categoria.localeCompare(b.categoria));
-      const columns = ['ID', 'Nome', 'Preço', 'Categoria', 'Estoque'];
-      const rows = data.map((produto) => [
-        produto.id,
-        produto.nome,
-        `R$ ${produto.valor.toFixed(2)}`,
-        produto.categoria,
-        produto.quantidadeEstoque,
+
+      doc.text('Relatório de Clientes por Email', 10, 10);
+
+      const data = clientes.data
+        .sort((a, b) => a.email.localeCompare(b.email));
+
+      const columns = ['ID', 'Nome', 'Email', 'CPF', 'Telefone'];
+
+      const rows = data.map((cliente) => [
+        cliente.id,
+        cliente.nome,
+        cliente.email,
+        cliente.cpfOuCnpj,
+        cliente.telefone,
       ]);
+
       doc.autoTable({
         head: [columns],
         body: rows,
@@ -107,21 +107,28 @@ export default {
         tableWidth: 'auto',
         margin: { top: 25 },
       });
-      doc.save('RelatorioProdutosCategoria.pdf');
-    },
 
-    async gerarRelatorioProdutosEstoque() {
+      doc.save('RelatorioClientesEmail.pdf');
+    },
+    async gerarRelatorioClientesCPF() {
+      const clientes = await ClienteService.obterTodos();
       const doc = new jsPDF();
-      doc.text('Relatório de Produtos em Estoque', 10, 10);
-      const data = this.produtos.filter((produto) => produto.quantidadeEstoque > 0);
-      const columns = ['ID', 'Nome', 'Preço', 'Categoria', 'Estoque'];
-      const rows = data.map((produto) => [
-        produto.id,
-        produto.nome,
-        `R$ ${produto.valor.toFixed(2)}`,
-        produto.categoria,
-        produto.quantidadeEstoque,
+
+      doc.text('Relatório de Clientes por CPF', 10, 10);
+
+      const data = clientes.data
+        .sort((a, b) => a.cpfOuCnpj.localeCompare(b.cpfOuCnpj));
+
+      const columns = ['ID', 'Nome', 'Email', 'CPF', 'Telefone'];
+
+      const rows = data.map((cliente) => [
+        cliente.id,
+        cliente.nome,
+        cliente.email,
+        cliente.cpfOuCnpj,
+        cliente.telefone,
       ]);
+
       doc.autoTable({
         head: [columns],
         body: rows,
@@ -130,21 +137,28 @@ export default {
         tableWidth: 'auto',
         margin: { top: 25 },
       });
-      doc.save('RelatorioProdutosEstoque.pdf');
-    },
 
-    async gerarRelatorioProdutosEsgotados() {
+      doc.save('RelatorioClientesCPF.pdf');
+    },
+    async gerarRelatorioClientesTelefone() {
+      const clientes = await ClienteService.obterTodos();
       const doc = new jsPDF();
-      doc.text('Relatório de Produtos Esgotados', 10, 10);
-      const data = this.produtos.filter((produto) => produto.quantidadeEstoque <= 0);
-      const columns = ['ID', 'Nome', 'Preço', 'Categoria', 'Estoque'];
-      const rows = data.map((produto) => [
-        produto.id,
-        produto.nome,
-        `R$ ${produto.valor.toFixed(2)}`,
-        produto.categoria,
-        produto.quantidadeEstoque,
+
+      doc.text('Relatório de Clientes por Telefone', 10, 10);
+
+      const data = clientes.data
+        .sort((a, b) => a.telefone.localeCompare(b.telefone));
+
+      const columns = ['ID', 'Nome', 'Email', 'CPF', 'Telefone'];
+
+      const rows = data.map((cliente) => [
+        cliente.id,
+        cliente.nome,
+        cliente.email,
+        cliente.cpfOuCnpj,
+        cliente.telefone,
       ]);
+
       doc.autoTable({
         head: [columns],
         body: rows,
@@ -153,7 +167,8 @@ export default {
         tableWidth: 'auto',
         margin: { top: 25 },
       });
-      doc.save('RelatorioProdutosEsgotados.pdf');
+
+      doc.save('RelatorioClientesTelefone.pdf');
     },
   },
 };

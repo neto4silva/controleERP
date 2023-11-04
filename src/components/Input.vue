@@ -1,7 +1,7 @@
 <template>
   <v-flex xs12>
     <v-text-field
-      v-model="value"
+      v-model="valor"
       :label="label"
       :type="type"
       required
@@ -12,19 +12,24 @@
 
 <script>
 export default {
-  name: "In-put",
+  name: "in-put",
+  model: {
+    prop: "value",
+    event: "onChange",
+  },
   props: {
-    label: {type: String},
-    type: {type: String, default: 'text'}
+    label: { type: String },
+    type: { type: String, default: "text" },
+    value: { type: String },
   },
   data() {
     return {
-      value: "",
+      valor: this.value,
     };
   },
-  methods: {
-    onSubmit() {
-      this.$emit("submit", this.value);
+  watch: {
+    valor() {
+      this.$emit("onChange", this.valor);
     },
   },
 };

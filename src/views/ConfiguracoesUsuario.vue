@@ -60,7 +60,7 @@
 <script>
 
 export default {
-  name: "ConfiguracoesUsuario",
+  name: "configuracoesUsuario",
   methods: {
     editarNome() {
       // Adicione a lógica para editar o nome do usuário aqui

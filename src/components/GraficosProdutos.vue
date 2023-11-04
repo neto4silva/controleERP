@@ -26,7 +26,7 @@ import produtoService from "@/services/produto-service";
 import { Chart } from 'chart.js/auto';
 
 export default {
-  name: "GraficosProdutos",
+  name: "graficosProdutos",
   data() {
     return {
       produtos: [],

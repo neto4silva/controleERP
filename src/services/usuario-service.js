@@ -1,41 +1,24 @@
-import api from './api';
+import api from "./api";
 
-function login(email, senha){
-  return new Promise((resolve, reject) => {
-    return api.post(`/login`, {email, senha})
-    .then(response => resolve(response))
-    .catch(error => reject(error));
-  })
+function login(email, senha) {
+  return api.post(`/login`, { email, senha });
 }
 
-function logout(){
-  return new Promise((resolve, reject) => {
-    return api.delete(`/logout`)
-    .then(response => resolve(response))
-    .catch(error => reject(error));
-  })
+function logout() {
+  return api.delete(`/logout`);
 }
 
-function obterTodos(){
-  return new Promise((resolve, reject) => {
-    return api.get(`/usuarios`)
-    .then(response => resolve(response))
-    .catch(error => reject(error));
-  })
+function obterTodos() {
+  return api.get(`/usuarios`);
 }
 
-function obterTodosPorId(id){
-  return new Promise((resolve, reject) => {
-    return api.get(`/usuarios${id}`)
-    .then(response => resolve(response))
-    .catch(error => reject(error));
-  })
+function obterTodosPorId(id) {
+  return api.get(`/usuarios${id}`);
 }
-
 
 export default {
   login,
   logout,
   obterTodos,
-  obterTodosPorId
-}
+  obterTodosPorId,
+};

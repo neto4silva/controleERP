@@ -76,7 +76,7 @@ import Cliente from "@/models/cliente-model";
 import conversorData from "@/utils/conversor-data";
 
 export default {
-  name: "ControleDeClientes",
+  name: "cli-entes",
   filters: {
     data(data) {
       return conversorData.aplicarMascaraDataHoraEmDataIso(data);

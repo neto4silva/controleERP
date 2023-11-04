@@ -15,7 +15,7 @@ import ProdutoService from "@/services/produto-service";
 import RelatorioCard from "../components/RelatorioCard.vue"
 
 export default {
-  name: "Rel-Produtos",
+  name: "relatoriosProdutos",
   components: {
     RelatorioCard
   },
@@ -57,7 +57,6 @@ export default {
       }
     },
 
-    // Métodos para gerar relatórios
     async gerarRelatorioProdutosPreco() {
       const doc = new jsPDF();
       doc.text('Relatório de Produtos por Preço', 10, 10);

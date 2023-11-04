@@ -84,13 +84,15 @@
 </template>
 
 <script>
+import Swal from 'sweetalert2';
+
 export default {
-  name: "MenuView",
+  name: "me-nu",
   data() {
     return {
       drawer: false,
       profileMenu: false,
-      relatoriosMenu: false, // Adicionado
+      relatoriosMenu: false,
     };
   },
   computed: {
@@ -114,8 +116,19 @@ export default {
       this.profileMenu = !this.profileMenu;
     },
     logout() {
-      this.modoDark = false;
-      this.$router.push("/login");
+      Swal.fire({
+        title: 'Sair do sistema',
+        text: 'Tem certeza de que deseja sair do sistema?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sair',
+        cancelButtonText: 'Cancelar',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.modoDark = false;
+          this.$router.push("/login");
+        }
+      });
     },
   },
 };
