@@ -17,6 +17,7 @@
 import Button from "../components/Button.vue";
 
 export default {
+  name: 'relatorioCard',
   props: {
     relatorio: Object,
   },

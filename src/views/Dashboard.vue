@@ -4,81 +4,49 @@
       <h1>Dashboard</h1>
       <v-row>
         <v-col cols="12" md="3">
-          <v-card class="mb-4" color="success">
-            <v-card-title class="white--text">Total de Clientes</v-card-title>
-            <v-card-text class="text-center">
-              <v-row align="center">
-                <v-col cols="2">
-                  <v-icon size="64" color="white" class="icon-background"
-                    >mdi-account-multiple</v-icon
-                  >
-                </v-col>
-                <v-col cols="10" class="text-right">
-                  <h1 class="white--text" style="font-size: 3rem">
-                    {{ totalClientes }}
-                  </h1>
-                </v-col>
-              </v-row>
-            </v-card-text>
-          </v-card>
+          <DashboardCard
+            cardColor="success"
+            cardTitle="Total de Clientes"
+            cardIcon="mdi-account-multiple"
+            iconSize="64"
+            :cardValue="totalClientes"
+          ></DashboardCard>
         </v-col>
 
         <v-col cols="12" md="3">
-          <v-card class="mb-4" color="orange">
-            <v-card-title class="white--text">Total de Produtos</v-card-title>
-            <v-card-text class="text-center">
-              <v-row align="center">
-                <v-col cols="2">
-                  <v-icon size="64" color="white" class="icon-background"
-                    >mdi-shopping</v-icon
-                  >
-                </v-col>
-                <v-col cols="10" class="text-right">
-                  <h1 class="white--text" style="font-size: 3rem">
-                    {{ totalProdutos }}
-                  </h1>
-                </v-col>
-              </v-row>
-            </v-card-text>
-          </v-card>
+          <DashboardCard
+            cardColor="orange"
+            cardTitle="Total de Produtos"
+            cardIcon="mdi-shopping"
+            iconSize="64"
+            :cardValue="totalProdutos"
+          ></DashboardCard>
         </v-col>
 
         <v-col cols="12" md="3">
-          <v-card class="mb-4" color="blue">
-            <v-card-title class="white--text">Vendas Mensais</v-card-title>
-            <v-card-text class="text-center">
-              <v-row align="center">
-                <v-col cols="2">
-                  <v-icon size="64" color="white" class="icon-background"
-                    >mdi-currency-usd</v-icon
-                  >
-                </v-col>
-                <v-col cols="10" class="text-right">
-                  <h2 class="white--text">Em implementação</h2>
-                </v-col>
-              </v-row>
-            </v-card-text>
-          </v-card>
+          <DashboardCard
+            cardColor="blue"
+            cardTitle="Vendas Mensais"
+            cardIcon="mdi-currency-usd"
+            iconSize="64"
+            :cardValue="vendasMensais"
+          ></DashboardCard>
         </v-col>
 
         <v-col cols="12" md="3">
-          <v-card class="mb-4" color="purple">
-            <v-card-title class="white--text">Novos Pedidos</v-card-title>
-            <v-card-text class="text-center">
-              <v-row align="center">
-                <v-col cols="2">
-                  <v-icon size="64" color="white" class="icon-background"
-                    >mdi-cart</v-icon
-                  >
-                </v-col>
-                <v-col cols="10" class="text-right">
-                  <h2 class="white--text">Em implementação</h2>
-                </v-col>
-              </v-row>
-            </v-card-text>
-          </v-card>
+          <DashboardCard
+            cardColor="purple"
+            cardTitle="Novos Pedidos"
+            cardIcon="mdi-cart"
+            iconSize="64"
+            :cardValue="novosPedidos"
+          ></DashboardCard>
         </v-col>
-        <GraficosProdutos></GraficosProdutos>
+      </v-row>
+      <v-row>
+        <v-col cols="12">
+          <GraficosProdutos></GraficosProdutos>
+        </v-col>
       </v-row>
     </div>
   </v-container>
@@ -87,17 +55,21 @@
 <script>
 import produtoService from "@/services/produto-service";
 import clienteService from "@/services/cliente-service";
-import GraficosProdutos from '@/components/GraficosProdutos.vue';
+import DashboardCard from "@/components/DashboardCard.vue";
+import GraficosProdutos from "../components/GraficosProdutos.vue";
 
 export default {
-  name: "Dash-board",
+  name: "dash-board",
   components: {
-    GraficosProdutos,
+    DashboardCard,
+    GraficosProdutos
   },
   data() {
     return {
       totalClientes: 0,
       totalProdutos: 0,
+      vendasMensais: 0,
+      novosPedidos: 0,
       mostrarClientes: false,
       mostrarProdutos: false,
       clientes: [],
@@ -107,6 +79,7 @@ export default {
   created() {
     this.obterTotalClientes();
     this.obterTotalProdutos();
+    
   },
   methods: {
     obterTotalClientes() {

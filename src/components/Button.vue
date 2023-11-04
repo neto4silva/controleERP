@@ -6,7 +6,7 @@
   
   <script>
   export default {
-    name: "Bo-tao",
+    name: "bu-tton",
     props: {
       value: { type: String, required: true },
       callback: { type: Function, default: () => {} },

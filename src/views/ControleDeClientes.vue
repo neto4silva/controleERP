@@ -64,7 +64,7 @@ import conversorData from "@/utils/conversor-data";
 import Button from '../components/Button.vue';
 
 export default {
-  name: "ControleDeClientes",
+  name: "controleDeClientes",
   components: {
     Button,
   },
@@ -179,11 +179,17 @@ export default {
         this.$swal.fire('Erro', 'Ocorreu um erro ao editar o cliente', 'error');
       }
     },
+    
+    ordenarClientes(cliente,clientes) {
+      return (cliente.id < clientes.id) ? -1 : (cliente.id > clientes.id) ? 1 : 0
+    },
 
     async obterTodosOsClientes() {
       try {
         const response = await clienteService.obterTodos();
-        this.clientes = response.data.map((c) => new Cliente(c));
+        let clientes = response.data.map((c) => new Cliente(c));
+
+        this.clientes = clientes.sort(this.ordenarClientes).reverse();
       } catch (error) {
         console.log(error);
         this.$swal.fire('Erro', 'Ocorreu um erro ao obter os clientes', 'error');

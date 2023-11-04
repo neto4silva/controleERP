@@ -96,7 +96,7 @@ import conversorMonetario from "@/utils/conversor-monetario";
 import Button from "../components/Button.vue";
 
 export default {
-  name: "ControleDeProdutos",
+  name: "controleDeProdutos",
   components: {
     Button,
   },
@@ -141,7 +141,7 @@ export default {
     };
   },
 
-  created() {
+  mounted() {
     this.obterTodosOsProdutos();
   },
 
@@ -237,11 +237,17 @@ export default {
       this.$router.push("/produtos");
     },
 
+    ordenarProdutos(produto,produtos) {
+      return (produto.id < produtos.id) ? -1 : (produto.id > produtos.id) ? 1 : 0
+    },
+
     obterTodosOsProdutos() {
       produtoService
         .obterTodos()
         .then((response) => {
-          this.produtos = response.data.map((p) => new Produto(p));
+          let produtos = response.data.map((p) => new Produto(p));
+          
+          this.produtos = produtos.sort(this.ordenarProdutos).reverse();
         })
         .catch((error) => {
           this.$swal.fire({

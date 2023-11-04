@@ -6,11 +6,12 @@
           <v-card-text class="border-blue">
             <div class="text-center">
               <img src="@/assets/logo.png" alt="Logo da Empresa" width="300" />
+              {{ usuario.email }}
             </div>
             <v-form @submit.prevent="login">
               <v-layout column>
-                <Input label="Usuario"/>
-                <Input label="Senha" type=""/>
+                <Input label="Email" v-model="usuario.email"/>
+                <Input label="Senha" type="password" v-model="usuario.senha"/>
                 <v-flex xs12>
                   <Button class="btn" value="Entrar" :callback="login"></Button>
                 </v-flex>
@@ -32,6 +33,14 @@ export default {
   components: {
     Button,
     Input,
+  },
+  data () {
+    return {
+      usuario: {
+        email: '',
+        senha: ''
+      }
+    };
   },
   methods: {
     login() {
