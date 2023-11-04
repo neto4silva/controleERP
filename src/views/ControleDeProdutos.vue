@@ -1,6 +1,5 @@
 <template>
   <div>
-    <Menu></Menu>
     <v-container>
       <h1>Produtos</h1>
       <v-divider class="mb-10 mt-4"></v-divider>
@@ -90,7 +89,6 @@
 </template>
 
 <script>
-import Menu from "@/components/Menu.vue";
 import produtoService from "@/services/produto-service";
 import Produto from "@/models/produto-model";
 import conversorData from "@/utils/conversor-data";
@@ -100,7 +98,6 @@ import Button from "../components/Button.vue";
 export default {
   name: "ControleDeProdutos",
   components: {
-    Menu,
     Button,
   },
   filters: {

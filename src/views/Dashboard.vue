@@ -1,9 +1,7 @@
 <template>
   <v-container>
     <div>
-      <Menu></Menu>
       <h1>Dashboard</h1>
-
       <v-row>
         <v-col cols="12" md="3">
           <v-card class="mb-4" color="success">
@@ -87,7 +85,6 @@
 </template>
 
 <script>
-import Menu from "@/components/Menu.vue";
 import produtoService from "@/services/produto-service";
 import clienteService from "@/services/cliente-service";
 import GraficosProdutos from '@/components/GraficosProdutos.vue';
@@ -95,7 +92,6 @@ import GraficosProdutos from '@/components/GraficosProdutos.vue';
 export default {
   name: "Dash-board",
   components: {
-    Menu,
     GraficosProdutos,
   },
   data() {

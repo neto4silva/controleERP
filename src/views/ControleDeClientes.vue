@@ -1,6 +1,5 @@
 <template>
   <div>
-    <Menu></Menu>
     <v-container>
       <h1>Clientes</h1>
       <v-divider class="mb-10 mt-4"></v-divider>
@@ -59,7 +58,6 @@
 </template>
 
 <script>
-import Menu from "@/components/Menu.vue";
 import clienteService from "@/services/cliente-service";
 import Cliente from "@/models/cliente-model";
 import conversorData from "@/utils/conversor-data";
@@ -68,7 +66,6 @@ import Button from '../components/Button.vue';
 export default {
   name: "ControleDeClientes",
   components: {
-    Menu,
     Button,
   },
   filters: {

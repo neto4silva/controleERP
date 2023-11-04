@@ -2,31 +2,17 @@
   <v-container fill-height>
     <v-layout align-center justify-center>
       <v-flex xs12 sm8 md4>
-        <v-card class="elevation-12">
+        <v-card class="elevation-12 dimensao">
           <v-card-text class="border-blue">
             <div class="text-center">
-              <img src="@/assets/logo.png" alt="Logo da Empresa" width="200" />
+              <img src="@/assets/logo.png" alt="Logo da Empresa" width="300" />
             </div>
             <v-form @submit.prevent="login">
               <v-layout column>
+                <Input label="Usuario"/>
+                <Input label="Senha" type=""/>
                 <v-flex xs12>
-                  <v-text-field
-                    v-model="email"
-                    label="E-mail"
-                    required
-                  ></v-text-field>
-                </v-flex>
-                <v-flex xs12>
-                  <v-text-field
-                    v-model="password"
-                    label="Senha"
-                    type="password"
-                    required
-                    @keyup.enter="login"
-                  ></v-text-field>
-                </v-flex>
-                <v-flex xs12>
-                  <Button value="Entrar" :callback="login"></Button>
+                  <Button class="btn" value="Entrar" :callback="login"></Button>
                 </v-flex>
               </v-layout>
             </v-form>
@@ -39,34 +25,42 @@
 
 <script>
 import Button from "../components/Button.vue";
+import Input from "../components/Input.vue";
 
 export default {
   name: "Log-in",
   components: {
     Button,
-  },
-  data() {
-    return {
-      email: "",
-      password: "",
-    };
+    Input,
   },
   methods: {
     login() {
       if (this.email === "senhas" && this.password === "senhas") {
         this.$router.push("/");
       } else {
-        this.$vuetify.snackbar.error("Credenciais inválidas. Tente novamente.");
+        this.$sawl.fire({
+          icon: "error",
+          title: "Credenciais inválidas",
+          text: "Tente novamente.",
+        });
       }
     },
   },
 };
 </script>
 
-<style>
+<style scoped>
 .border-blue {
   border: 1px solid #2d4f6c;
   border-top: 3px solid #2d4f6c;
   padding: 20px;
+}
+
+.dimensao {
+  width: 500px;
+}
+
+.btn {
+  width: 100%;
 }
 </style>
