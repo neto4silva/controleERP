@@ -1,8 +1,6 @@
 <template>
   <v-container>
     <div>
-      <Menu></Menu>
-
       <div class="text-center mb-4">
         <div class="d-inline-block align-middle">
           <v-avatar size="150">
@@ -60,13 +58,9 @@
 </template>
 
 <script>
-import Menu from "@/components/Menu.vue"
 
 export default {
   name: "ConfiguracoesUsuario",
-  components: {
-    Menu
-  },
   methods: {
     editarNome() {
       // Adicione a lógica para editar o nome do usuário aqui

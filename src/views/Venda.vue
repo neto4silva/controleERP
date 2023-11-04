@@ -1,6 +1,5 @@
 <template>
   <v-container>
-    <Menu></Menu>
     <div class="mt-5">
       <h1 class="text-h5">Registro de Venda</h1>
 
@@ -69,7 +68,6 @@ import produtoService from "@/services/produto-service";
 import clienteService from "@/services/cliente-service";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
-import Menu from "@/components/Menu.vue";
 import Button from "../components/Button.vue";
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -86,7 +84,6 @@ const valor = (value) => {
 export default {
   name: "ven-da",
   components: {
-    Menu,
     Button
   },
   data() {

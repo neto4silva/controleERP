@@ -1,211 +1,131 @@
 <template>
-  <div>
-    <Menu></Menu>
-    <v-container>
-      <h1>Produtos</h1>
-      <v-divider class="mb-10 mt-4"></v-divider>
-      <v-row class="mb-4">
-        <v-col>
-          <Button value="Adicionar" :callback="abrirModalAdicao"></Button>
-        </v-col>
-        <v-col class="text-right">
-          <v-btn @click="visualizarCards" icon>
-            <v-icon>mdi-view-dashboard</v-icon>
-          </v-btn>
-        </v-col>
-      </v-row>
-
-      <v-data-table
-        :items="produtos"
-        :headers="headers"
-        item-key="id"
-        @click:row="abrirModalEdicao"
-        class="table-with-pointer"
-      >
-        <!-- eslint-disable vue/valid-v-slot -->
-        <template v-slot:item.valor="{ item }">
-          {{ item.valor | valor }}
-        </template>
-        <template v-slot:item.dataCadastro="{ item }">
-          {{ item.dataCadastro | data }}
-        </template>
-      </v-data-table>
-    </v-container>
-
-    <Cadastro
-      :modalAberto.sync="modalAberto"
-      :adicionarTitulo="'Adicionar Produto'"
-      :editarTitulo="'Editar Produto'"
-      :edicao.sync="edicao"
-      @adicionar="adicionarProduto"
-      @editar="editarProduto"
-      @excluir="excluirProduto"
-    >
-      <v-text-field
-        v-model="produto.nome"
-        label="Nome do Produto"
-      ></v-text-field>
-      <v-text-field v-model="produto.valor" label="Valor"></v-text-field>
-      <v-text-field
-        v-model="produto.quantidadeEstoque"
-        label="Quantidade em Estoque"
-      ></v-text-field>
-      <v-textarea v-model="produto.observacao" label="Observação"></v-textarea>
-    </Cadastro>
-  </div>
+  <v-container class="mt-5">
+    <v-row>
+      <v-col v-for="relatorio in relatorios" :key="relatorio.nome" cols="12" sm="6" md="4" lg="3">
+        <RelatorioCard :relatorio="relatorio" />
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
-import Menu from "@/components/Menu.vue";
-import produtoService from "@/services/produto-service";
-import Produto from "@/models/produto-model";
-import conversorData from "@/utils/conversor-data";
-import conversorMonetario from "@/utils/conversor-monetario";
-import Button from "../components/Button.vue";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import ProdutoService from "@/services/produto-service";
+import RelatorioCard from "../components/RelatorioCard.vue"
 
 export default {
-  name: "ControleDeProdutos",
+  name: "Rel-Produtos",
   components: {
-    Menu,
-    Button,
-  },
-  filters: {
-    data(data) {
-      return conversorData.aplicarMascaraDataHoraEmDataIso(data);
-    },
-    valor(value) {
-      return conversorMonetario.aplicarMascaraParaRealcomPrefixo(value);
-    },
+    RelatorioCard
   },
   data() {
     return {
       produtos: [],
-      headers: [
+      relatorios: [
         {
-          text: "ID",
-          value: "id",
+          nome: "Relatório de Produtos por Preço",
+          descricao: "Este relatório exibe os produtos ordenados por preço.",
+          funcao: this.gerarRelatorioProdutosPreco,
+          icone: "mdi-currency-usd",
         },
         {
-          text: "Nome",
-          value: "nome",
+          nome: "Relatório de Produtos em Estoque",
+          descricao: "Este relatório exibe os produtos em estoque.",
+          funcao: this.gerarRelatorioProdutosEstoque,
+          icone: "mdi-package-variant-closed",
         },
         {
-          text: "Valor",
-          value: "valor",
-        },
-        {
-          text: "Quantidade",
-          value: "quantidadeEstoque",
-        },
-        {
-          text: "Data de Cadastro",
-          value: "dataCadastro",
+          nome: "Relatório de Produtos Esgotados",
+          descricao: "Este relatório exibe os produtos esgotados.",
+          funcao: this.gerarRelatorioProdutosEsgotados,
+          icone: "mdi-package-variant",
         },
       ],
-
-      modalAberto: false,
-      produto: new Produto(),
-      edicao: false,
-      continuarAdicionando: false,
     };
   },
-
   created() {
-    this.obterTodosOsProdutos();
+    this.obterTodos();
   },
-
   methods: {
-    abrirModalAdicao() {
-      this.produto = new Produto();
-      this.produto.dataCadastro = new Date();
-      this.edicao = false;
-      this.modalAberto = true;
-      this.continuarAdicionando = false;
-    },
-
-    abrirModalEdicao(produto) {
-      this.produto = new Produto(produto);
-      this.edicao = true;
-      this.modalAberto = true;
-      this.continuarAdicionando = false;
-    },
-
-    adicionarProduto() {
-      produtoService
-        .cadastrar(this.produto)
-        .then(() => {
-          this.$swal({
-            position: "center",
-            icon: "success",
-            title: "Produto cadastrado com sucesso",
-            showConfirmButton: false,
-            timer: 1500,
-          });
-          this.produto = new Produto();
-          this.obterTodosOsProdutos();
-          if (!this.continuarAdicionando) {
-            this.modalAberto = false;
-          }
-        })
-        .catch((error) => {
-          console.error("Erro ao adicionar o produto:", error);
-        });
-    },
-
-    editarProduto() {
-      produtoService
-        .atualizar(this.produto)
-        .then(() => {
-          this.$swal({
-            position: "center",
-            icon: "success",
-            title: "Produto editado com sucesso",
-            showConfirmButton: false,
-            timer: 1500,
-          });
-          this.produto = new Produto();
-          this.obterTodosOsProdutos();
-          this.modalAberto = false;
-        })
-        .catch((error) => {
-          console.error("Erro ao editar o produto:", error);
-        });
-    },
-
-    visualizarCards() {
-      this.$router.push("/produtos");
-    },
-
-    obterTodosOsProdutos() {
-      produtoService
-        .obterTodos()
-        .then((response) => {
-          this.produtos = response.data.map((p) => new Produto(p));
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-
-    excluirProduto(id) {
-      if (confirm("Deseja excluir este produto?")) {
-        produtoService
-          .deletar(id)
-          .then(() => {
-            this.obterTodosOsProdutos();
-            this.modalAberto = false;
-          })
-          .catch((error) => {
-            console.error("Erro ao excluir o produto:", error);
-          });
+    async obterTodos() {
+      try {
+        const response = await ProdutoService.obterTodos();
+        this.produtos = response.data;
+      } catch (error) {
+        console.error("Erro ao obter produtos:", error);
       }
+    },
+
+    // Métodos para gerar relatórios
+    async gerarRelatorioProdutosPreco() {
+      const doc = new jsPDF();
+      doc.text('Relatório de Produtos por Preço', 10, 10);
+      const data = this.produtos.slice().sort((a, b) => a.valor - b.valor);
+      const columns = ['ID', 'Nome', 'Preço', 'Categoria', 'Estoque'];
+      const rows = data.map((produto) => [
+        produto.id,
+        produto.nome,
+        `R$ ${produto.valor.toFixed(2)}`,
+        produto.categoria,
+        produto.quantidadeEstoque,
+      ]);
+      doc.autoTable({
+        head: [columns],
+        body: rows,
+        startY: 20,
+        theme: 'grid',
+        tableWidth: 'auto',
+        margin: { top: 25 },
+      });
+      doc.save('RelatorioProdutosPreco.pdf');
+    },
+
+    async gerarRelatorioProdutosEstoque() {
+      const doc = new jsPDF();
+      doc.text('Relatório de Produtos em Estoque', 10, 10);
+      const data = this.produtos.filter((produto) => produto.quantidadeEstoque > 0);
+      const columns = ['ID', 'Nome', 'Preço', 'Categoria', 'Estoque'];
+      const rows = data.map((produto) => [
+        produto.id,
+        produto.nome,
+        `R$ ${produto.valor.toFixed(2)}`,
+        produto.categoria,
+        produto.quantidadeEstoque,
+      ]);
+      doc.autoTable({
+        head: [columns],
+        body: rows,
+        startY: 20,
+        theme: 'grid',
+        tableWidth: 'auto',
+        margin: { top: 25 },
+      });
+      doc.save('RelatorioProdutosEstoque.pdf');
+    },
+
+    async gerarRelatorioProdutosEsgotados() {
+      const doc = new jsPDF();
+      doc.text('Relatório de Produtos Esgotados', 10, 10);
+      const data = this.produtos.filter((produto) => produto.quantidadeEstoque <= 0);
+      const columns = ['ID', 'Nome', 'Preço', 'Categoria', 'Estoque'];
+      const rows = data.map((produto) => [
+        produto.id,
+        produto.nome,
+        `R$ ${produto.valor.toFixed(2)}`,
+        produto.categoria,
+        produto.quantidadeEstoque,
+      ]);
+      doc.autoTable({
+        head: [columns],
+        body: rows,
+        startY: 20,
+        theme: 'grid',
+        tableWidth: 'auto',
+        margin: { top: 25 },
+      });
+      doc.save('RelatorioProdutosEsgotados.pdf');
     },
   },
 };
 </script>
-
-<style>
-.table-with-pointer tbody tr:hover {
-  cursor: pointer;
-}
-</style>
