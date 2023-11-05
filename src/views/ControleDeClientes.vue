@@ -5,7 +5,26 @@
       <v-divider class="mb-10 mt-4"></v-divider>
       <v-row class="mb-4">
         <v-col>
-          <Button value="Adicionar" :callback="abrirModalAdicao"></Button>
+          <v-row align="center">
+            <v-col>
+              <Button value="Adicionar" :callback="abrirModalAdicao"></Button>
+            </v-col>
+            <v-col>
+              <v-select
+                v-model="filtro"
+                :items="tiposFiltro"
+                label="Filtrar por"
+                hide-details
+              ></v-select>
+            </v-col>
+            <v-col>
+              <v-text-field
+                v-model="pesquisa"
+                label="Pesquisar cliente"
+                hide-details
+              ></v-text-field>
+            </v-col>
+          </v-row>
         </v-col>
         <v-col class="text-right">
           <v-col class="text-right">
@@ -17,11 +36,13 @@
       </v-row>
 
       <v-data-table
-        :items="clientes"
+        :items="clientesFiltrados"
         :headers="headers"
         item-key="id"
         @click:row="abrirModalEdicao"
         class="table-with-pointer"
+        hide-default-footer
+        :items-per-page="1000"
       >
         <!-- eslint-disable vue/valid-v-slot -->
         <template v-slot:item.dataCadastro="{ item }">
@@ -35,22 +56,45 @@
         <v-card-title v-if="!edicao">Adicionar Cliente</v-card-title>
         <v-card-title v-else>Editar Cliente</v-card-title>
         <v-card-text>
-          <v-form @submit.prevent="edicao ? editarCliente() : adicionarCliente()">
-            <v-text-field v-model="cliente.nome" label="Nome do Cliente"></v-text-field>
-            <v-text-field v-model="cliente.cpfOuCnpj" label="CPF ou CNPJ"></v-text-field>
+          <v-form
+            @submit.prevent="edicao ? editarCliente() : adicionarCliente()"
+          >
+            <v-text-field
+              v-model="cliente.nome"
+              label="Nome do Cliente"
+            ></v-text-field>
+            <v-text-field
+              v-model="cliente.cpfOuCnpj"
+              label="CPF ou CNPJ"
+            ></v-text-field>
             <v-text-field v-model="cliente.email" label="E-mail"></v-text-field>
-            <v-text-field v-model="cliente.telefone" label="Telefone"></v-text-field>
-            <v-text-field v-model="cliente.idUsuario" label="ID do Usuário"></v-text-field>
-
-            <v-checkbox v-model="manterAberto" label="Continuar adicionando"></v-checkbox>
+            <v-text-field
+              v-model="cliente.telefone"
+              label="Telefone"
+            ></v-text-field>
+            <v-text-field
+              v-model="cliente.idUsuario"
+              label="ID do Usuário"
+            ></v-text-field>
+            <v-checkbox
+              v-if="!edicao"
+              v-model="manterAberto"
+              label="Continuar adicionando"
+            ></v-checkbox>
           </v-form>
         </v-card-text>
         <v-card-actions>
-          <v-btn v-if="edicao" @click="excluirCliente(cliente.id)" color="error">Excluir</v-btn>
-          <v-spacer></v-spacer>          
+          <v-btn v-if="edicao" @click="excluirCliente(cliente.id)" color="error"
+            >Excluir</v-btn
+          >
+          <v-spacer></v-spacer>
           <v-btn @click="modalAberto = manterAberto">Fechar</v-btn>
-          <v-btn v-if="!edicao" @click="adicionarCliente" color="#2D4F6C" dark>Adicionar</v-btn>
-          <v-btn v-else @click="editarCliente" color="#2D4F6C" dark>Editar</v-btn>
+          <v-btn v-if="!edicao" @click="adicionarCliente" color="#2D4F6C" dark
+            >Adicionar</v-btn
+          >
+          <v-btn v-else @click="editarCliente" color="#2D4F6C" dark
+            >Editar</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -61,7 +105,7 @@
 import clienteService from "@/services/cliente-service";
 import Cliente from "@/models/cliente-model";
 import conversorData from "@/utils/conversor-data";
-import Button from '../components/Button.vue';
+import Button from "../components/Button.vue";
 
 export default {
   name: "controleDeClientes",
@@ -76,6 +120,9 @@ export default {
   data() {
     return {
       clientes: [],
+      pesquisa: "",
+      filtro: "nome", 
+      tiposFiltro: ["nome", "cpfOuCnpj", "email"], 
       headers: [
         {
           text: "ID",
@@ -110,12 +157,24 @@ export default {
       modalAberto: false,
       cliente: new Cliente(),
       edicao: false,
-      manterAberto: false, 
+      manterAberto: false,
     };
   },
 
   created() {
     this.obterTodosOsClientes();
+  },
+
+  computed: {
+    clientesFiltrados() {
+      if (!this.pesquisa) {
+        return this.clientes;
+      }
+      const pesquisaLowerCase = this.pesquisa.toLowerCase();
+      return this.clientes.filter((cliente) =>
+        cliente[this.filtro].toLowerCase().includes(pesquisaLowerCase)
+      );
+    },
   },
 
   methods: {
@@ -134,7 +193,8 @@ export default {
     },
 
     validarCliente(cliente) {
-      return (cliente.nome &&
+      return (
+        cliente.nome &&
         cliente.email &&
         cliente.telefone &&
         cliente.cpfOuCnpj &&
@@ -151,13 +211,25 @@ export default {
           if (!this.manterAberto) {
             this.modalAberto = false;
           }
-          this.$swal.fire('Sucesso', 'Cliente adicionado com sucesso', 'success');
+          this.$swal.fire(
+            "Sucesso",
+            "Cliente adicionado com sucesso",
+            "success"
+          );
         } catch (error) {
           console.error("Erro ao adicionar o cliente:", error);
-          this.$swal.fire('Erro', 'Ocorreu um erro ao adicionar o cliente', 'error');
+          this.$swal.fire(
+            "Erro",
+            "Ocorreu um erro ao adicionar o cliente",
+            "error"
+          );
         }
       } else {
-        this.$swal.fire('Erro', 'Por favor, preencha todos os campos obrigatórios', 'error');
+        this.$swal.fire(
+          "Erro",
+          "Por favor, preencha todos os campos obrigatórios",
+          "error"
+        );
       }
     },
 
@@ -173,15 +245,15 @@ export default {
         if (!this.manterAberto) {
           this.modalAberto = false;
         }
-        this.$swal.fire('Sucesso', 'Cliente editado com sucesso', 'success');
+        this.$swal.fire("Sucesso", "Cliente editado com sucesso", "success");
       } catch (error) {
         console.error("Erro ao editar o cliente:", error);
-        this.$swal.fire('Erro', 'Ocorreu um erro ao editar o cliente', 'error');
+        this.$swal.fire("Erro", "Ocorreu um erro ao editar o cliente", "error");
       }
     },
-    
-    ordenarClientes(cliente,clientes) {
-      return (cliente.id < clientes.id) ? -1 : (cliente.id > clientes.id) ? 1 : 0
+
+    ordenarClientes(cliente, clientes) {
+      return cliente.id < clientes.id ? -1 : cliente.id > clientes.id ? 1 : 0;
     },
 
     async obterTodosOsClientes() {
@@ -192,33 +264,47 @@ export default {
         this.clientes = clientes.sort(this.ordenarClientes).reverse();
       } catch (error) {
         console.log(error);
-        this.$swal.fire('Erro', 'Ocorreu um erro ao obter os clientes', 'error');
+        this.$swal.fire(
+          "Erro",
+          "Ocorreu um erro ao obter os clientes",
+          "error"
+        );
       }
     },
 
     excluirCliente(id) {
-      this.$swal.fire({
-        title: 'Confirmar exclusão',
-        text: 'Deseja excluir este cliente?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Sim, excluir',
-        cancelButtonText: 'Cancelar'
-      }).then(async (result) => {
-        if (result.isConfirmed) {
-          try {
-            await clienteService.deletar(id);
-            this.obterTodosOsClientes();
-            if (!this.manterAberto) {
-              this.modalAberto = false;
+      this.$swal
+        .fire({
+          title: "Confirmar exclusão",
+          text: "Deseja excluir este cliente?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Sim, excluir",
+          cancelButtonText: "Cancelar",
+        })
+        .then(async (result) => {
+          if (result.isConfirmed) {
+            try {
+              await clienteService.deletar(id);
+              this.obterTodosOsClientes();
+              if (!this.manterAberto) {
+                this.modalAberto = false;
+              }
+              this.$swal.fire(
+                "Sucesso",
+                "Cliente excluído com sucesso",
+                "success"
+              );
+            } catch (error) {
+              console.error("Erro ao excluir o cliente:", error);
+              this.$swal.fire(
+                "Erro",
+                "Ocorreu um erro ao excluir o cliente",
+                "error"
+              );
             }
-            this.$swal.fire('Sucesso', 'Cliente excluído com sucesso', 'success'); 
-          } catch (error) {
-            console.error("Erro ao excluir o cliente:", error);
-            this.$swal.fire('Erro', 'Ocorreu um erro ao excluir o cliente', 'error'); 
           }
-        }
-      });
+        });
     },
   },
 };

@@ -7,6 +7,13 @@
         <v-col>
           <Button value="Adicionar" :callback="abrirModalAdicao"></Button>
         </v-col>
+        <v-col>
+          <v-text-field
+            v-model="pesquisa"
+            label="Pesquisar produto"
+            hide-details
+          ></v-text-field>
+        </v-col>
         <v-col class="text-right">
           <v-btn @click="visualizarCards" icon>
             <v-icon>mdi-view-dashboard</v-icon>
@@ -15,11 +22,13 @@
       </v-row>
 
       <v-data-table
-        :items="produtos"
+        :items="produtosFiltrados"
         :headers="headers"
         item-key="id"
         @click:row="abrirModalEdicao"
         class="table-with-pointer"
+        hide-default-footer
+        :items-per-page="1000"
       >
         <!-- eslint-disable vue/valid-v-slot -->
         <template v-slot:item.valor="{ item }">
@@ -111,6 +120,7 @@ export default {
   data() {
     return {
       produtos: [],
+      pesquisa: "",
       headers: [
         {
           text: "ID",
@@ -143,6 +153,18 @@ export default {
 
   mounted() {
     this.obterTodosOsProdutos();
+  },
+
+  computed: {
+    produtosFiltrados() {
+      if (!this.pesquisa) {
+        return this.produtos;
+      }
+      const pesquisaLowerCase = this.pesquisa.toLowerCase();
+      return this.produtos.filter((produto) =>
+        produto.nome.toLowerCase().includes(pesquisaLowerCase)
+      );
+    },
   },
 
   methods: {
@@ -237,8 +259,8 @@ export default {
       this.$router.push("/produtos");
     },
 
-    ordenarProdutos(produto,produtos) {
-      return (produto.id < produtos.id) ? -1 : (produto.id > produtos.id) ? 1 : 0
+    ordenarProdutos(produto, produtos) {
+      return produto.id < produtos.id ? -1 : produto.id > produtos.id ? 1 : 0;
     },
 
     obterTodosOsProdutos() {
@@ -246,7 +268,7 @@ export default {
         .obterTodos()
         .then((response) => {
           let produtos = response.data.map((p) => new Produto(p));
-          
+
           this.produtos = produtos.sort(this.ordenarProdutos).reverse();
         })
         .catch((error) => {

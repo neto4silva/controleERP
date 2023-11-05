@@ -8,7 +8,7 @@
             cardColor="success"
             cardTitle="Total de Clientes"
             cardIcon="mdi-account-multiple"
-            iconSize="64"
+            :iconSize="64"
             :cardValue="totalClientes"
           ></DashboardCard>
         </v-col>
@@ -18,7 +18,7 @@
             cardColor="orange"
             cardTitle="Total de Produtos"
             cardIcon="mdi-shopping"
-            iconSize="64"
+            :iconSize="64"
             :cardValue="totalProdutos"
           ></DashboardCard>
         </v-col>
@@ -28,7 +28,7 @@
             cardColor="blue"
             cardTitle="Vendas Mensais"
             cardIcon="mdi-currency-usd"
-            iconSize="64"
+            :iconSize="64"
             :cardValue="vendasMensais"
           ></DashboardCard>
         </v-col>
@@ -38,7 +38,7 @@
             cardColor="purple"
             cardTitle="Novos Pedidos"
             cardIcon="mdi-cart"
-            iconSize="64"
+            :iconSize="64"
             :cardValue="novosPedidos"
           ></DashboardCard>
         </v-col>
