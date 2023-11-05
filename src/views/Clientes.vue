@@ -6,7 +6,12 @@
       <v-row>
         <v-col v-for="cliente in clientes" :key="cliente.id" cols="12" md="3">
           <v-card class="mb-4" @click="abrirModalEdicao(cliente)">
-            <img :src="imagemClienteUrl" alt="Imagem do Cliente" width="100%" />
+            <img
+              :src="imagemClienteUrl"
+              alt="Imagem do Cliente"
+              width="100%"
+              style="max-height: 200px"
+            />
             <v-card-title class="text-h5"
               >{{ cliente.nome }}
               <v-chip

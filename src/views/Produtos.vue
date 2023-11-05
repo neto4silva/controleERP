@@ -7,7 +7,12 @@
       <v-row>
         <v-col v-for="produto in produtos" :key="produto.id" cols="12" md="3">
           <v-card class="mb-4" @click="abrirModalEdicao(produto)">
-            <img :src="imagemProdutoUrl" alt="Imagem do Produto" width="100%" />
+            <img
+              :src="imagemProdutoUrl"
+              alt="Imagem do Produto"
+              width="100%"
+              style="max-height: 200px"
+            />
             <v-card-title class="text-h5"
               >{{ produto.nome }}
               <v-chip
