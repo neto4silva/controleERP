@@ -5,13 +5,13 @@
 
       <v-row>
         <v-col cols="12" md="6" lg="4">
-          <v-select
+          <v-autocomplete
             v-model="clienteSelecionado"
             :items="clientes"
             label="Selecione um Cliente"
             item-text="nome"
-            item-value="id"
-          ></v-select>
+            item-value="nome"
+          ></v-autocomplete>
         </v-col>
 
         <v-col cols="12" md="6" lg="4">
@@ -47,6 +47,9 @@
         <template v-slot:item.subtotal="{ item }">
           {{ item.subtotal | valor }}
         </template>
+        <template v-slot:item.action="{ item }">
+          <v-btn @click="openEditModal(item)">Editar</v-btn>
+        </template>
       </v-data-table>
 
       <v-divider class="my-4"></v-divider>
@@ -59,6 +62,28 @@
           <strong>Total: {{ totalVenda | valor }}</strong>
         </v-col>
       </v-row>
+
+      <v-dialog v-model="editModal" max-width="400">
+        <v-card>
+          <v-card-title>Editar Item</v-card-title>
+          <v-card-text>
+            <v-text-field
+              v-model="editedItem.quantidade"
+              label="Quantidade"
+              type="number"
+            ></v-text-field>
+            <v-text-field
+              v-model="editedItem.produto.valor"
+              label="Valor"
+              type="number"
+            ></v-text-field>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn @click="saveEditedItem">Salvar</v-btn>
+            <v-btn @click="closeEditModal">Cancelar</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </div>
   </v-container>
 </template>
@@ -69,10 +94,11 @@ import clienteService from "@/services/cliente-service";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import Button from "../components/Button.vue";
+import Cliente from "@/models/cliente-model";
+import Produto from "@/models/produto-model";
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
-// Definir o filtro diretamente no componente
 const valor = (value) => {
   if (!value) return "";
   return parseFloat(value).toLocaleString("pt-BR", {
@@ -84,12 +110,13 @@ const valor = (value) => {
 export default {
   name: "ven-da",
   components: {
-    Button
+    Button,
   },
   data() {
     return {
       clientes: [],
       clienteSelecionado: null,
+      clienteParaPDF: null,
       produtos: [],
       produtoSelecionado: null,
       quantidade: 1,
@@ -99,7 +126,15 @@ export default {
         { text: "Quantidade", value: "quantidade" },
         { text: "Valor Unitário", value: "produto.valor" },
         { text: "Subtotal", value: "subtotal" },
+        { text: "Ação", value: "action", sortable: false },
       ],
+      editModal: false,
+      editedItem: {
+        quantidade: 0,
+        produto: {
+          valor: 0,
+        },
+      },
     };
   },
   computed: {
@@ -112,15 +147,6 @@ export default {
   },
   filters: {
     valor,
-  },
-  created() {
-    clienteService.obterTodos().then((response) => {
-      this.clientes = response.data;
-    });
-
-    produtoService.obterTodos().then((response) => {
-      this.produtos = response.data;
-    });
   },
   methods: {
     adicionarItem() {
@@ -149,10 +175,40 @@ export default {
         this.quantidade = 1;
       }
     },
+    async obterTodosOsClientes() {
+      try {
+        const response = await clienteService.obterTodos();
+        let clientes = response.data.map((c) => new Cliente(c));
+
+        this.clientes = clientes.sort(this.ordenarClientes).reverse();
+      } catch (error) {
+        console.log(error);
+        this.$swal.fire(
+          "Erro",
+          "Ocorreu um erro ao obter os clientes",
+          "error"
+        );
+      }
+    },
+    async obterTodosOsProdutos() {
+      try {
+        const response = await produtoService.obterTodos();
+        let produtos = response.data.map((p) => new Produto(p));
+
+        this.produtos = produtos.sort(this.ordenarProdutos).reverse();
+      } catch (error) {
+        console.log(error);
+        this.$swal.fire({
+          title: "Erro",
+          text: "Erro ao obter produtos: " + error,
+          icon: "error",
+        });
+      }
+    },
 
     gerarPdfVenda() {
       if (this.clienteSelecionado && this.vendaItens.length > 0) {
-        const cliente = this.clienteSelecionado;
+        this.clienteParaPDF = this.clienteSelecionado;
 
         const docDefinition = {
           content: [
@@ -165,7 +221,7 @@ export default {
               style: "subheader",
             },
             {
-              text: `Cliente: ${cliente.nome}`,
+              text: `Cliente: ${this.clienteParaPDF}`,
               style: "subheader",
             },
             {
@@ -207,29 +263,72 @@ export default {
         };
 
         let timerInterval;
-        this.$swal.fire({
-          title: "A venda está sendo Gerada",
-          html: "Sua venda estará pronta em <b></b>",
-          timer: 2000,
-          timerProgressBar: true,
-          didOpen: () => {
-            this.$swal.showLoading();
-            const b = this.$swal.getHtmlContainer().querySelector("b");
-            timerInterval = setInterval(() => {
-              b.textContent = this.$swal.getTimerLeft();
-            }, 100);
-          },
-          willClose: () => {
-            clearInterval(timerInterval);
-          },
-        }).then((result) => {
-          if (result.dismiss === this.$swal.DismissReason.timer) {
-            pdfMake.createPdf(docDefinition).open();
-          }
-        });
-        
+        this.$swal
+          .fire({
+            title: "A venda está sendo Gerada",
+            html: "Sua venda estará pronta em <b></b>",
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: () => {
+              this.$swal.showLoading();
+              const b = this.$swal.getHtmlContainer().querySelector("b");
+              timerInterval = setInterval(() => {
+                b.textContent = this.$swal.getTimerLeft();
+              }, 100);
+            },
+            willClose: () => {
+              clearInterval(timerInterval);
+            },
+          })
+          .then((result) => {
+            if (result.dismiss === this.$swal.DismissReason.timer) {
+              pdfMake.createPdf(docDefinition).open();
+            }
+          });
       }
     },
+
+    openEditModal(item) {
+      this.editedItem = { ...item };
+      this.editModal = true;
+    },
+
+    saveEditedItem() {
+      // Encontre o índice do item editado na lista de vendaItens
+      const index = this.vendaItens.findIndex(
+        (item) => item === this.editedItem
+      );
+
+      if (index !== -1) {
+        // Atualize a quantidade e o valor do produto no item editado
+        this.editedItem.subtotal =
+          this.editedItem.produto.valor * this.editedItem.quantidade;
+
+        // Atualize o item na lista de vendaItens
+        this.$set(this.vendaItens, index, { ...this.editedItem });
+
+        // Recalcule o total da venda
+        this.forceUpdateTotalVenda();
+      }
+
+      // Feche o modal de edição
+      this.editModal = false;
+    },
+
+    closeEditModal() {
+      // Feche o modal de edição sem salvar as alterações
+      this.editModal = false;
+    },
+    forceUpdateTotalVenda() {
+      this.totalVenda = this.vendaItens.reduce(
+        (total, item) => total + (item.subtotal || 0),
+        0
+      );
+    },
+  },
+  created() {
+    this.obterTodosOsClientes();
+    this.obterTodosOsProdutos();
   },
 };
 </script>
