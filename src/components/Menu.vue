@@ -1,42 +1,22 @@
 <template>
   <div>
-    <v-app-bar app>
-      <v-app-bar-nav-icon @click="openDrawer"></v-app-bar-nav-icon>
-      <v-app-bar-title>Controle ERP</v-app-bar-title>
-      <v-menu v-model="profileMenu" offset-y>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn text icon v-bind="attrs" v-on="on" class="ml-5">
-            <v-icon>mdi-account-circle</v-icon>
-          </v-btn>
-          <v-btn icon class="ml-auto">
-            <span class="badge">0</span>
-            <v-icon>mdi-bell</v-icon>
-          </v-btn>
-        </template>
-        <v-list>
-          <v-list-item @click="$router.push('/configuracoes-usuario')">
-            <v-list-item-icon>
-              <v-icon>mdi-account</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>Meu perfil</v-list-item-title>
-          </v-list-item>
-          <v-list-item @click="logout">
-            <v-list-item-icon>
-              <v-icon>mdi-logout</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>Sair</v-list-item-title>
-          </v-list-item>
-          <v-list-item @click="toggleDarkMode">
-            <v-list-item-icon>
-              <v-icon>mdi-theme-light-dark</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>Modo Escuro</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
-    </v-app-bar>
-
-    <v-navigation-drawer app v-model="drawer" temporary>
+    <v-navigation-drawer v-model="drawer" app>
+      <v-img
+        height="140"
+        class="pa-4"
+        src="https://media.istockphoto.com/id/1283467210/pt/vetorial/light-blue-coloured-checkered-grunge-vector-backgrounds-with-narrow-or-fine-checks.jpg?s=612x612&w=0&k=20&c=XeQYpKHYxltIrMsRfxKdJIoY6tvesgqiK0qAUqsil_g="
+      >
+        <div class="text-center">
+          <v-avatar class="mb-4" color="grey darken-1" size="64">
+            <v-img
+              aspect-ratio="30"
+              src="https://img.freepik.com/vetores-premium/perfil-de-avatar-de-homem-no-icone-redondo_24640-14044.jpg"
+            />
+          </v-avatar>
+          <h2>Meu Perfil</h2>
+        </div>
+      </v-img>
+      <v-divider></v-divider>
       <v-list>
         <v-subheader>Menu</v-subheader>
         <v-list-item to="/">
@@ -80,19 +60,127 @@
         </v-list>
       </v-list>
     </v-navigation-drawer>
+
+    <v-app-bar app elevate-on-scroll elevation="3" color="white">
+      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-spacer></v-spacer>
+
+      <!-- notificações -->
+      <v-menu offset-y>
+        <template v-slot:activator="{ attrs, on }">
+          <span class="mx-5 mr-10" style="cursor: pointer" v-bind="attrs" v-on="on" @click="openNotificationsMenu">
+            <v-badge content="3" color="red" offset-y="10" offset-x="10">
+              <v-icon>mdi-bell</v-icon>
+            </v-badge>
+          </span>
+        </template>
+        <v-list three-line width="250">
+          <template v-for="(item, index) in items">
+            <v-subheader v-if="item.header" :key="item.header" v-text="item.header"></v-subheader>
+            <v-divider v-else-if="item.divider" :key="index" :inset="item.inset"></v-divider>
+            <v-list-item v-else :key="item.title">
+              <v-list-item-avatar>
+                <v-img :src="item.avatar"></v-img>
+              </v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title v-html="item.title"></v-list-item-title>
+                <v-list-item-subtitle v-html="item.subtitle"></v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+          </template>
+        </v-list>
+      </v-menu>
+
+      <!-- perfil -->
+      <v-menu offset-y>
+        <template v-slot:activator="{ attrs, on }">
+          <span style="cursor: pointer" v-bind="attrs" v-on="on">
+            <v-chip link>
+              <v-badge dot bottom color="green" offset-y="10" offset-x="10">
+                <v-avatar size="40">
+                  <v-img src="https://img.freepik.com/vetores-premium/perfil-de-avatar-de-homem-no-icone-redondo_24640-14044.jpg"/>
+                </v-avatar>
+              </v-badge>
+              <span class="ml-3">Meu Perfil</span>
+            </v-chip>
+          </span>
+        </template>
+        <v-list width="250" class="py-0">
+          <v-list-item two-line>
+            <v-list-item-avatar>
+              <img src="https://img.freepik.com/vetores-premium/perfil-de-avatar-de-homem-no-icone-redondo_24640-14044.jpg"/>
+            </v-list-item-avatar>
+            <v-list-item-content>
+              <v-list-item-title>Meu Perfil</v-list-item-title>
+              <v-list-item-subtitle>Online</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+          <v-divider />
+          <v-list-item v-for="(menu, i) in menus" :key="i">
+            <v-list-item-icon>
+              <v-icon>{{ menu.icon }}</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>
+              {{ menu.title }}
+            </v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+    </v-app-bar>
   </div>
 </template>
 
 <script>
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 
 export default {
-  name: "me-nu",
+  name: "TopBar",
   data() {
     return {
       drawer: false,
+      menus: [
+        { title: "Perfil", icon: "mdi-account" },
+        { title: "Alterar Senha", icon: "mdi-key" },
+        { title: "Configurações", icon: "mdi-cog" },
+        { title: "Sair", icon: "mdi-logout" },
+      ],
+      items: [
+        {
+          avatar: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
+          title: "Brunch this weekend?",
+          subtitle: `<span class="text--primary">Ali Connors</span> &mdash; I'll be in your neighborhood doing errands this weekend. Do you want to hang out?`,
+        },
+        { divider: true, inset: true },
+        {
+          avatar: "https://cdn.vuetifyjs.com/images/lists/2.jpg",
+          title: 'Summer BBQ <span class="grey--text text--lighten-1">4</span>',
+          subtitle: `<span class="text--primary">to Alex, Scott, Jennifer</span> &mdash; Wish I could come, but I'm out of town this weekend.`,
+        },
+        { divider: true, inset: true },
+        {
+          avatar: "https://cdn.vuetifyjs.com/images/lists/3.jpg",
+          title: "Oui oui",
+          subtitle:
+            '<span class="text--primary">Sandra Adams</span> &mdash; Do you have Paris recommendations? Have you ever been?',
+        },
+        { divider: true, inset: true },
+        {
+          avatar: "https://cdn.vuetifyjs.com/images/lists/4.jpg",
+          title: "Birthday gift",
+          subtitle:
+            '<span class="text--primary">Trevor Hansen</span> &mdash; Have any ideas about what we should get Heidi for her birthday?',
+        },
+        { divider: true, inset: true },
+        {
+          avatar: "https://cdn.vuetifyjs.com/images/lists/5.jpg",
+          title: "Recipe to try",
+          subtitle:
+            '<span class="text--primary">Britta Holt</span> &mdash; We should eat this: Grate, Squash, Corn, and tomatillo Tacos.',
+        },
+      ],
+      isDesktop: false,
+      notificationsMenu: false,
       profileMenu: false,
-      relatoriosMenu: false,
     };
   },
   computed: {
@@ -110,19 +198,16 @@ export default {
       this.modoDark = !this.modoDark;
     },
     openDrawer() {
-      this.drawer = true;
-    },
-    openProfileMenu() {
-      this.profileMenu = !this.profileMenu;
+      this.drawer = !this.drawer;
     },
     logout() {
       Swal.fire({
-        title: 'Sair do sistema',
-        text: 'Tem certeza de que deseja sair do sistema?',
-        icon: 'warning',
+        title: "Sair do sistema",
+        text: "Tem certeza de que deseja sair do sistema?",
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonText: 'Sair',
-        cancelButtonText: 'Cancelar',
+        confirmButtonText: "Sair",
+        cancelButtonText: "Cancelar",
       }).then((result) => {
         if (result.isConfirmed) {
           this.modoDark = false;
@@ -130,23 +215,22 @@ export default {
         }
       });
     },
+    openNotificationsMenu() {
+      this.notificationsMenu = !this.notificationsMenu;
+    },
+    openProfileMenu() {
+      this.profileMenu = !this.profileMenu;
+    },
+  },
+  created() {
+    this.isDesktop = window.innerWidth >= 768;
+    window.addEventListener("resize", () => {
+      this.isDesktop = window.innerWidth >= 768;
+    });
   },
 };
 </script>
 
 <style scoped>
-.profile-button {
-  position: relative;
-  display: inline-block;
-}
-
-.badge {
-  background-color: red;
-  color: white;
-  border-radius: 50%;
-  padding: 4px 8px;
-  position: absolute;
-  top: -8px;
-  right: -8px;
-}
+/* Seus estilos aqui */
 </style>
