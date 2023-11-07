@@ -5,7 +5,11 @@
       <v-divider class="mb-10 mt-4"></v-divider>
       <v-row class="mb-4">
         <v-col>
-          <Button value="Adicionar" :callback="abrirModalAdicao"></Button>
+          <Button
+            data-testid="adicionar-btn"
+            value="Adicionar"
+            :callback="abrirModalAdicao"
+          ></Button>
         </v-col>
         <v-col>
           <v-text-field
@@ -73,8 +77,9 @@
             ></v-textarea>
 
             <v-checkbox
+              v-if="!edicao"
               v-model="continuarAdicionando"
-              label="Continuar adicionando produtos"
+              label="Continuar adicionando"
             ></v-checkbox>
           </v-form>
         </v-card-text>
@@ -84,11 +89,23 @@
           >
           <v-spacer></v-spacer>
           <v-spacer></v-spacer>
-          <v-btn @click="beforeFecharModal">Fechar</v-btn>
-          <v-btn v-if="!edicao" @click="adicionarProduto()" color="#2D4F6C" dark
+          <v-btn @click="beforeFecharModal"
+            >Fechar</v-btn
+          >
+          <v-btn
+            v-if="!edicao"
+            @click="adicionarProduto()"
+            color="#2D4F6C"
+            dark
+            data-testid="modal-adicionar-btn"
             >Adicionar</v-btn
           >
-          <v-btn v-else @click="editarProduto()" color="#2D4F6C" dark
+          <v-btn
+            v-else
+            @click="editarProduto()"
+            color="#2D4F6C"
+            dark
+            data-testid="modal-editar-btn"
             >Editar</v-btn
           >
         </v-card-actions>
@@ -102,10 +119,10 @@ import produtoService from "@/services/produto-service";
 import Produto from "@/models/produto-model";
 import conversorData from "@/utils/conversor-data";
 import conversorMonetario from "@/utils/conversor-monetario";
-import Button from "../components/Button.vue";
+import Button from "@/components/Button/Button.vue";
 
 export default {
-  name: "controleDeProdutos",
+  name: "ControleDeProdutos",
   components: {
     Button,
   },

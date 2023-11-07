@@ -1,7 +1,14 @@
 <template>
   <v-container class="mt-5">
     <v-row>
-      <v-col v-for="relatorio in relatorios" :key="relatorio.nome" cols="12" sm="6" md="4" lg="3">
+      <v-col
+        v-for="relatorio in relatorios"
+        :key="relatorio.nome"
+        cols="12"
+        sm="6"
+        md="4"
+        lg="3"
+      >
         <RelatorioCard :relatorio="relatorio" />
       </v-col>
     </v-row>
@@ -12,12 +19,12 @@
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import ClienteService from "@/services/cliente-service";
-import RelatorioCard from "../components/RelatorioCard.vue"
+import RelatorioCard from "../components/Cards/RelatorioCard.vue";
 
 export default {
-  name: "relatoriosClientes",
+  name: "RelatoriosClientes",
   components: {
-    RelatorioCard
+    RelatorioCard,
   },
   data() {
     return {
@@ -54,12 +61,11 @@ export default {
       const clientes = await ClienteService.obterTodos();
       const doc = new jsPDF();
 
-      doc.text('Relatório de Clientes por Nome', 10, 10);
+      doc.text("Relatório de Clientes por Nome", 10, 10);
 
-      const data = clientes.data
-        .sort((a, b) => a.nome.localeCompare(b.nome));
+      const data = clientes.data.sort((a, b) => a.nome.localeCompare(b.nome));
 
-      const columns = ['ID', 'Nome', 'Email', 'CPF', 'Telefone'];
+      const columns = ["ID", "Nome", "Email", "CPF", "Telefone"];
 
       const rows = data.map((cliente) => [
         cliente.id,
@@ -73,23 +79,22 @@ export default {
         head: [columns],
         body: rows,
         startY: 20,
-        theme: 'grid',
-        tableWidth: 'auto',
+        theme: "grid",
+        tableWidth: "auto",
         margin: { top: 25 },
       });
 
-      doc.save('RelatorioClientesNome.pdf');
+      doc.save("RelatorioClientesNome.pdf");
     },
     async gerarRelatorioClientesEmail() {
       const clientes = await ClienteService.obterTodos();
       const doc = new jsPDF();
 
-      doc.text('Relatório de Clientes por Email', 10, 10);
+      doc.text("Relatório de Clientes por Email", 10, 10);
 
-      const data = clientes.data
-        .sort((a, b) => a.email.localeCompare(b.email));
+      const data = clientes.data.sort((a, b) => a.email.localeCompare(b.email));
 
-      const columns = ['ID', 'Nome', 'Email', 'CPF', 'Telefone'];
+      const columns = ["ID", "Nome", "Email", "CPF", "Telefone"];
 
       const rows = data.map((cliente) => [
         cliente.id,
@@ -103,23 +108,24 @@ export default {
         head: [columns],
         body: rows,
         startY: 20,
-        theme: 'grid',
-        tableWidth: 'auto',
+        theme: "grid",
+        tableWidth: "auto",
         margin: { top: 25 },
       });
 
-      doc.save('RelatorioClientesEmail.pdf');
+      doc.save("RelatorioClientesEmail.pdf");
     },
     async gerarRelatorioClientesCPF() {
       const clientes = await ClienteService.obterTodos();
       const doc = new jsPDF();
 
-      doc.text('Relatório de Clientes por CPF', 10, 10);
+      doc.text("Relatório de Clientes por CPF", 10, 10);
 
-      const data = clientes.data
-        .sort((a, b) => a.cpfOuCnpj.localeCompare(b.cpfOuCnpj));
+      const data = clientes.data.sort((a, b) =>
+        a.cpfOuCnpj.localeCompare(b.cpfOuCnpj)
+      );
 
-      const columns = ['ID', 'Nome', 'Email', 'CPF', 'Telefone'];
+      const columns = ["ID", "Nome", "Email", "CPF", "Telefone"];
 
       const rows = data.map((cliente) => [
         cliente.id,
@@ -133,23 +139,24 @@ export default {
         head: [columns],
         body: rows,
         startY: 20,
-        theme: 'grid',
-        tableWidth: 'auto',
+        theme: "grid",
+        tableWidth: "auto",
         margin: { top: 25 },
       });
 
-      doc.save('RelatorioClientesCPF.pdf');
+      doc.save("RelatorioClientesCPF.pdf");
     },
     async gerarRelatorioClientesTelefone() {
       const clientes = await ClienteService.obterTodos();
       const doc = new jsPDF();
 
-      doc.text('Relatório de Clientes por Telefone', 10, 10);
+      doc.text("Relatório de Clientes por Telefone", 10, 10);
 
-      const data = clientes.data
-        .sort((a, b) => a.telefone.localeCompare(b.telefone));
+      const data = clientes.data.sort((a, b) =>
+        a.telefone.localeCompare(b.telefone)
+      );
 
-      const columns = ['ID', 'Nome', 'Email', 'CPF', 'Telefone'];
+      const columns = ["ID", "Nome", "Email", "CPF", "Telefone"];
 
       const rows = data.map((cliente) => [
         cliente.id,
@@ -163,12 +170,12 @@ export default {
         head: [columns],
         body: rows,
         startY: 20,
-        theme: 'grid',
-        tableWidth: 'auto',
+        theme: "grid",
+        tableWidth: "auto",
         margin: { top: 25 },
       });
 
-      doc.save('RelatorioClientesTelefone.pdf');
+      doc.save("RelatorioClientesTelefone.pdf");
     },
   },
 };

@@ -10,8 +10,8 @@
             </div>
             <v-form @submit.prevent="login">
               <v-layout column>
-                <Input label="Email" v-model="usuario.email"/>
-                <Input label="Senha" type="password" v-model="usuario.senha"/>
+                <Input label="Email" v-model="usuario.email" />
+                <Input label="Senha" type="password" v-model="usuario.senha" />
                 <v-flex xs12>
                   <Button class="btn" value="Entrar" :callback="login"></Button>
                 </v-flex>
@@ -25,21 +25,21 @@
 </template>
 
 <script>
-import Button from "../components/Button.vue";
-import Input from "../components/Input.vue";
+import Button from "@/components/Button/Button.vue";
+import Input from "../components/Input/Input.vue";
 
 export default {
-  name: "Log-in",
+  name: "LoginPrincipal",
   components: {
     Button,
     Input,
   },
-  data () {
+  data() {
     return {
       usuario: {
-        email: '',
-        senha: ''
-      }
+        email: "",
+        senha: "",
+      },
     };
   },
   methods: {

@@ -58,9 +58,8 @@
 </template>
 
 <script>
-
 export default {
-  name: "configuracoesUsuario",
+  name: "ConfiguracoesUsuario",
   methods: {
     editarNome() {
       // Adicione a lógica para editar o nome do usuário aqui

@@ -47,9 +47,6 @@
         <template v-slot:item.subtotal="{ item }">
           {{ item.subtotal | valor }}
         </template>
-        <template v-slot:item.action="{ item }">
-          <v-btn @click="openEditModal(item)">Editar</v-btn>
-        </template>
       </v-data-table>
 
       <v-divider class="my-4"></v-divider>
@@ -62,28 +59,6 @@
           <strong>Total: {{ totalVenda | valor }}</strong>
         </v-col>
       </v-row>
-
-      <v-dialog v-model="editModal" max-width="400">
-        <v-card>
-          <v-card-title>Editar Item</v-card-title>
-          <v-card-text>
-            <v-text-field
-              v-model="editedItem.quantidade"
-              label="Quantidade"
-              type="number"
-            ></v-text-field>
-            <v-text-field
-              v-model="editedItem.produto.valor"
-              label="Valor"
-              type="number"
-            ></v-text-field>
-          </v-card-text>
-          <v-card-actions>
-            <v-btn @click="saveEditedItem">Salvar</v-btn>
-            <v-btn @click="closeEditModal">Cancelar</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
     </div>
   </v-container>
 </template>
@@ -93,7 +68,7 @@ import produtoService from "@/services/produto-service";
 import clienteService from "@/services/cliente-service";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
-import Button from "../components/Button.vue";
+import Button from "@/components/Button/Button.vue";
 import Cliente from "@/models/cliente-model";
 import Produto from "@/models/produto-model";
 
@@ -108,7 +83,7 @@ const valor = (value) => {
 };
 
 export default {
-  name: "ven-da",
+  name: "RegistroVenda",
   components: {
     Button,
   },
@@ -173,6 +148,7 @@ export default {
 
         this.produtoSelecionado = null;
         this.quantidade = 1;
+        console.log(this.clienteSelecionado.telefone)
       }
     },
     async obterTodosOsClientes() {
@@ -291,39 +267,6 @@ export default {
     openEditModal(item) {
       this.editedItem = { ...item };
       this.editModal = true;
-    },
-
-    saveEditedItem() {
-      // Encontre o índice do item editado na lista de vendaItens
-      const index = this.vendaItens.findIndex(
-        (item) => item === this.editedItem
-      );
-
-      if (index !== -1) {
-        // Atualize a quantidade e o valor do produto no item editado
-        this.editedItem.subtotal =
-          this.editedItem.produto.valor * this.editedItem.quantidade;
-
-        // Atualize o item na lista de vendaItens
-        this.$set(this.vendaItens, index, { ...this.editedItem });
-
-        // Recalcule o total da venda
-        this.forceUpdateTotalVenda();
-      }
-
-      // Feche o modal de edição
-      this.editModal = false;
-    },
-
-    closeEditModal() {
-      // Feche o modal de edição sem salvar as alterações
-      this.editModal = false;
-    },
-    forceUpdateTotalVenda() {
-      this.totalVenda = this.vendaItens.reduce(
-        (total, item) => total + (item.subtotal || 0),
-        0
-      );
     },
   },
   created() {

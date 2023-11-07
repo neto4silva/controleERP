@@ -23,13 +23,15 @@
 
 <script>
 import produtoService from "@/services/produto-service";
-import { Chart } from 'chart.js/auto';
+import { Chart } from "chart.js/auto";
 
 export default {
   name: "graficosProdutos",
   data() {
     return {
       produtos: [],
+      chartMaiorEstoque: null,
+      chartZeradoNegativo: null,
     };
   },
   computed: {
@@ -46,6 +48,9 @@ export default {
   created() {
     this.obterProdutos();
   },
+  beforeDestroy() {
+    this.destruirGraficos();
+  },
   methods: {
     obterProdutos() {
       produtoService
@@ -61,14 +66,16 @@ export default {
     },
     criarGraficos() {
       const ctxMaiorEstoque = this.$refs.chartMaiorEstoque;
-      new Chart(ctxMaiorEstoque, {
+      this.chartMaiorEstoque = new Chart(ctxMaiorEstoque, {
         type: "line",
         data: {
           labels: this.produtosEstoqueMaior.map((produto) => produto.nome),
           datasets: [
             {
               label: "Quantidade de Estoque",
-              data: this.produtosEstoqueMaior.map((produto) => produto.quantidadeEstoque),
+              data: this.produtosEstoqueMaior.map(
+                (produto) => produto.quantidadeEstoque
+              ),
               backgroundColor: "rgba(75, 192, 192, 0.2)",
               borderColor: "rgba(75, 192, 192, 1)",
               borderWidth: 3,
@@ -84,14 +91,18 @@ export default {
         },
       });
       const ctxZeradoNegativo = this.$refs.chartZeradoNegativo;
-      new Chart(ctxZeradoNegativo, {
+      this.chartZeradoNegativo = new Chart(ctxZeradoNegativo, {
         type: "line",
         data: {
-          labels: this.produtosEstoqueZeradoNegativo.map((produto) => produto.nome),
+          labels: this.produtosEstoqueZeradoNegativo.map(
+            (produto) => produto.nome
+          ),
           datasets: [
             {
               label: "Quantidade de Estoque",
-              data: this.produtosEstoqueZeradoNegativo.map((produto) => produto.quantidadeEstoque),
+              data: this.produtosEstoqueZeradoNegativo.map(
+                (produto) => produto.quantidadeEstoque
+              ),
               backgroundColor: "rgba(255, 99, 132, 0.2)",
               borderColor: "rgba(255, 99, 132, 1)",
               borderWidth: 3,
@@ -106,6 +117,14 @@ export default {
           },
         },
       });
+    },
+    destruirGraficos() {
+      if (this.chartMaiorEstoque) {
+        this.chartMaiorEstoque.destroy();
+      }
+      if (this.chartZeradoNegativo) {
+        this.chartZeradoNegativo.destroy();
+      }
     },
   },
 };

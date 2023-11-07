@@ -14,62 +14,62 @@ const routes = [
     path: "/",
     name: "home",
     component: Dashboard,
-    meta: {requiredAuth: true }
+    meta: { requiredAuth: true },
   },
   {
     path: "/controle-de-clientes",
     name: "ControleDeClientes",
     component: ControleDeClientes,
-    meta: {requiredAuth: true }
+    meta: { requiredAuth: true },
   },
   {
     path: "/controle-de-produtos",
     name: "ControleDeProdutos",
     component: ControleDeProdutos,
-    meta: { requiredAuth: true }
-  },  
+    meta: { requiredAuth: true },
+  },
   {
     path: "/login",
     name: "Login",
     component: Login,
-    meta: {requiredAuth: false }
+    meta: { requiredAuth: false },
   },
   {
     path: "/configuracoes-usuario",
     name: "ConfiguracoesUsuario",
     component: ConfiguracoesUsuario,
-    meta: {requiredAuth: true }
+    meta: { requiredAuth: true },
   },
   {
     path: "/relatorios-clientes",
     name: "Relatorios Clientes",
     component: RelatoriosClientes,
-    meta: {requiredAuth: true }
+    meta: { requiredAuth: true },
   },
   {
     path: "/relatorios-Produtos",
     name: "Relatorios",
     component: RelatoriosProdutos,
-    meta: {requiredAuth: true }
+    meta: { requiredAuth: true },
   },
   {
     path: "/clientes",
     name: "Clientes",
     component: Clientes,
-    meta: {requiredAuth: true }
+    meta: { requiredAuth: true },
   },
   {
     path: "/produtos",
     name: "Produtos",
     component: Produtos,
-    meta: {requiredAuth: true }
+    meta: { requiredAuth: true },
   },
   {
     path: "/venda",
     name: "Venda",
     component: Venda,
-    meta: {requiredAuth: true }
+    meta: { requiredAuth: true },
   },
 ];
 
-export default routes
+export default routes;

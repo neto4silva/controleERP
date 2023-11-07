@@ -1,7 +1,7 @@
-import api from './api';
+import api from "./api";
 
 function obterTodos() {
-  return api.get('/produtos');
+  return api.get("/produtos");
 }
 
 function obterPorId(id) {
@@ -9,7 +9,7 @@ function obterPorId(id) {
 }
 
 function cadastrar(produto) {
-  return api.post('/produtos', produto);
+  return api.post("/produtos", produto);
 }
 
 function atualizar(produto) {

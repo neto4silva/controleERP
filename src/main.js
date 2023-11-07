@@ -1,12 +1,12 @@
-import Vue from 'vue';
-import App from './App.vue';
-import router from './router';
-import Vuetify from 'vuetify';
-import 'vuetify/dist/vuetify.min.css'; 
-import '@mdi/font/css/materialdesignicons.css';
-import VueSweetalert2 from 'vue-sweetalert2';
+import Vue from "vue";
+import App from "./App.vue";
+import router from "./router";
+import Vuetify from "vuetify";
+import "vuetify/dist/vuetify.min.css";
+import "@mdi/font/css/materialdesignicons.css";
+import VueSweetalert2 from "vue-sweetalert2";
 
-import 'sweetalert2/dist/sweetalert2.min.css';
+import "sweetalert2/dist/sweetalert2.min.css";
 
 Vue.use(VueSweetalert2);
 
@@ -23,5 +23,5 @@ const vuetify = new Vuetify({
 new Vue({
   router,
   vuetify,
-  render: h => h(App),
-}).$mount('#app');
+  render: (h) => h(App),
+}).$mount("#app");
