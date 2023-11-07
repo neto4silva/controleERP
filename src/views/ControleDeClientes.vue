@@ -105,10 +105,10 @@
 import clienteService from "@/services/cliente-service";
 import Cliente from "@/models/cliente-model";
 import conversorData from "@/utils/conversor-data";
-import Button from "../components/Button.vue";
+import Button from "@/components/Button/Button.vue";
 
 export default {
-  name: "controleDeClientes",
+  name: "ControleDeClientes",
   components: {
     Button,
   },
@@ -121,8 +121,8 @@ export default {
     return {
       clientes: [],
       pesquisa: "",
-      filtro: "nome", 
-      tiposFiltro: ["nome", "cpfOuCnpj", "email"], 
+      filtro: "nome",
+      tiposFiltro: ["nome", "cpfOuCnpj", "email"],
       headers: [
         {
           text: "ID",

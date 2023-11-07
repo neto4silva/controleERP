@@ -82,7 +82,7 @@ import conversorData from "@/utils/conversor-data";
 import conversorMonetario from "@/utils/conversor-monetario";
 
 export default {
-  name: "pro-dutos",
+  name: "ProdutosCard",
   filters: {
     data(data) {
       return conversorData.aplicarMascaraDataHoraEmDataIso(data);

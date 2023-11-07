@@ -1,7 +1,14 @@
 <template>
   <v-container class="mt-5">
     <v-row>
-      <v-col v-for="relatorio in relatorios" :key="relatorio.nome" cols="12" sm="6" md="4" lg="3">
+      <v-col
+        v-for="relatorio in relatorios"
+        :key="relatorio.nome"
+        cols="12"
+        sm="6"
+        md="4"
+        lg="3"
+      >
         <RelatorioCard :relatorio="relatorio" />
       </v-col>
     </v-row>
@@ -12,12 +19,12 @@
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import ProdutoService from "@/services/produto-service";
-import RelatorioCard from "../components/RelatorioCard.vue"
+import RelatorioCard from "../components/Cards/RelatorioCard.vue";
 
 export default {
-  name: "relatoriosProdutos",
+  name: "RelatoriosProdutos",
   components: {
-    RelatorioCard
+    RelatorioCard,
   },
   data() {
     return {
@@ -59,9 +66,9 @@ export default {
 
     async gerarRelatorioProdutosPreco() {
       const doc = new jsPDF();
-      doc.text('Relatório de Produtos por Preço', 10, 10);
+      doc.text("Relatório de Produtos por Preço", 10, 10);
       const data = this.produtos.slice().sort((a, b) => a.valor - b.valor);
-      const columns = ['ID', 'Nome', 'Preço', 'Categoria', 'Estoque'];
+      const columns = ["ID", "Nome", "Preço", "Categoria", "Estoque"];
       const rows = data.map((produto) => [
         produto.id,
         produto.nome,
@@ -73,18 +80,20 @@ export default {
         head: [columns],
         body: rows,
         startY: 20,
-        theme: 'grid',
-        tableWidth: 'auto',
+        theme: "grid",
+        tableWidth: "auto",
         margin: { top: 25 },
       });
-      doc.save('RelatorioProdutosPreco.pdf');
+      doc.save("RelatorioProdutosPreco.pdf");
     },
 
     async gerarRelatorioProdutosEstoque() {
       const doc = new jsPDF();
-      doc.text('Relatório de Produtos em Estoque', 10, 10);
-      const data = this.produtos.filter((produto) => produto.quantidadeEstoque > 0);
-      const columns = ['ID', 'Nome', 'Preço', 'Categoria', 'Estoque'];
+      doc.text("Relatório de Produtos em Estoque", 10, 10);
+      const data = this.produtos.filter(
+        (produto) => produto.quantidadeEstoque > 0
+      );
+      const columns = ["ID", "Nome", "Preço", "Categoria", "Estoque"];
       const rows = data.map((produto) => [
         produto.id,
         produto.nome,
@@ -96,18 +105,20 @@ export default {
         head: [columns],
         body: rows,
         startY: 20,
-        theme: 'grid',
-        tableWidth: 'auto',
+        theme: "grid",
+        tableWidth: "auto",
         margin: { top: 25 },
       });
-      doc.save('RelatorioProdutosEstoque.pdf');
+      doc.save("RelatorioProdutosEstoque.pdf");
     },
 
     async gerarRelatorioProdutosEsgotados() {
       const doc = new jsPDF();
-      doc.text('Relatório de Produtos Esgotados', 10, 10);
-      const data = this.produtos.filter((produto) => produto.quantidadeEstoque <= 0);
-      const columns = ['ID', 'Nome', 'Preço', 'Categoria', 'Estoque'];
+      doc.text("Relatório de Produtos Esgotados", 10, 10);
+      const data = this.produtos.filter(
+        (produto) => produto.quantidadeEstoque <= 0
+      );
+      const columns = ["ID", "Nome", "Preço", "Categoria", "Estoque"];
       const rows = data.map((produto) => [
         produto.id,
         produto.nome,
@@ -119,11 +130,11 @@ export default {
         head: [columns],
         body: rows,
         startY: 20,
-        theme: 'grid',
-        tableWidth: 'auto',
+        theme: "grid",
+        tableWidth: "auto",
         margin: { top: 25 },
       });
-      doc.save('RelatorioProdutosEsgotados.pdf');
+      doc.save("RelatorioProdutosEsgotados.pdf");
     },
   },
 };

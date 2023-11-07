@@ -1,7 +1,7 @@
-import api from './api';
+import api from "./api";
 
 function obterTodos() {
-  return api.get('/clientes');
+  return api.get("/clientes");
 }
 
 function obterPorId(id) {
@@ -9,7 +9,7 @@ function obterPorId(id) {
 }
 
 function cadastrar(cliente) {
-  return api.post('/clientes', cliente);
+  return api.post("/clientes", cliente);
 }
 
 function atualizar(cliente) {
@@ -25,5 +25,5 @@ export default {
   obterPorId,
   cadastrar,
   atualizar,
-  deletar
+  deletar,
 };

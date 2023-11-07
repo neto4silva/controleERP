@@ -19,11 +19,11 @@ function obterTokenNaStorage() {
 }
 
 function removerTokenNaStorage() {
-  localStorage.removeItem('token');
+  localStorage.removeItem("token");
 }
 
 function removerUsuarioNaStorage() {
-  localStorage.removeItem('usuario');
+  localStorage.removeItem("usuario");
 }
 
 export default {

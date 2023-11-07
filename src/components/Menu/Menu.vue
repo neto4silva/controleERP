@@ -13,7 +13,7 @@
               src="https://img.freepik.com/vetores-premium/perfil-de-avatar-de-homem-no-icone-redondo_24640-14044.jpg"
             />
           </v-avatar>
-          <h2>Meu Perfil</h2>
+          <h2 class="titulo">Meu Perfil</h2>
         </div>
       </v-img>
       <v-divider></v-divider>
@@ -61,30 +61,47 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar app elevate-on-scroll elevation="3" color="white">
-      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+    <v-app-bar app elevate-on-scroll elevation="3">
+      <v-app-bar-nav-icon class="nav-icon" @click="drawer = !drawer"></v-app-bar-nav-icon>
       <v-spacer></v-spacer>
 
       <!-- notificações -->
       <v-menu offset-y>
         <template v-slot:activator="{ attrs, on }">
-          <span class="mx-5 mr-10" style="cursor: pointer" v-bind="attrs" v-on="on" @click="openNotificationsMenu">
-            <v-badge content="3" color="red" offset-y="10" offset-x="10">
+          <span
+            class="mx-5 mr-10"
+            style="cursor: pointer"
+            v-bind="attrs"
+            v-on="on"
+            @click="openNotificationsMenu"
+          >
+            <v-badge content="3" color="red" offset-y="10" offset-x="10" class="v-badge">
               <v-icon>mdi-bell</v-icon>
             </v-badge>
           </span>
         </template>
         <v-list three-line width="250">
           <template v-for="(item, index) in items">
-            <v-subheader v-if="item.header" :key="item.header" v-text="item.header"></v-subheader>
-            <v-divider v-else-if="item.divider" :key="index" :inset="item.inset"></v-divider>
+            <!--eslint-disable vue/no-v-text-v-html-on-component--> 
+            <v-subheader
+              v-if="item.header"
+              :key="item.header"
+              v-text="item.header"
+            ></v-subheader>
+            <v-divider
+              v-else-if="item.divider"
+              :key="index"
+              :inset="item.inset"
+            ></v-divider>
             <v-list-item v-else :key="item.title">
               <v-list-item-avatar>
                 <v-img :src="item.avatar"></v-img>
               </v-list-item-avatar>
               <v-list-item-content>
                 <v-list-item-title v-html="item.title"></v-list-item-title>
-                <v-list-item-subtitle v-html="item.subtitle"></v-list-item-subtitle>
+                <v-list-item-subtitle
+                  v-html="item.subtitle"
+                ></v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </template>
@@ -97,8 +114,10 @@
           <span style="cursor: pointer" v-bind="attrs" v-on="on">
             <v-chip link>
               <v-badge dot bottom color="green" offset-y="10" offset-x="10">
-                <v-avatar size="40">
-                  <v-img src="https://img.freepik.com/vetores-premium/perfil-de-avatar-de-homem-no-icone-redondo_24640-14044.jpg"/>
+                <v-avatar size="50">
+                  <v-img
+                    src="https://img.freepik.com/vetores-premium/perfil-de-avatar-de-homem-no-icone-redondo_24640-14044.jpg"
+                  />
                 </v-avatar>
               </v-badge>
               <span class="ml-3">Meu Perfil</span>
@@ -108,7 +127,9 @@
         <v-list width="250" class="py-0">
           <v-list-item two-line>
             <v-list-item-avatar>
-              <img src="https://img.freepik.com/vetores-premium/perfil-de-avatar-de-homem-no-icone-redondo_24640-14044.jpg"/>
+              <img
+                src="https://img.freepik.com/vetores-premium/perfil-de-avatar-de-homem-no-icone-redondo_24640-14044.jpg"
+              />
             </v-list-item-avatar>
             <v-list-item-content>
               <v-list-item-title>Meu Perfil</v-list-item-title>
@@ -116,7 +137,11 @@
             </v-list-item-content>
           </v-list-item>
           <v-divider />
-          <v-list-item v-for="(menu, i) in menus" :key="i">
+          <v-list-item
+            v-for="(menu, i) in menus"
+            :key="i"
+            @click="menuItemClicked(menu)"
+          >
             <v-list-item-icon>
               <v-icon>{{ menu.icon }}</v-icon>
             </v-list-item-icon>
@@ -134,48 +159,49 @@
 import Swal from "sweetalert2";
 
 export default {
-  name: "TopBar",
+  name: "me-nu",
   data() {
     return {
       drawer: false,
       menus: [
         { title: "Perfil", icon: "mdi-account" },
-        { title: "Alterar Senha", icon: "mdi-key" },
         { title: "Configurações", icon: "mdi-cog" },
+        { title: "Modo Escuro", icon: "mdi-theme-light-dark" },
         { title: "Sair", icon: "mdi-logout" },
       ],
       items: [
         {
           avatar: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
-          title: "Brunch this weekend?",
-          subtitle: `<span class="text--primary">Ali Connors</span> &mdash; I'll be in your neighborhood doing errands this weekend. Do you want to hang out?`,
+          title: "Brunch neste fim de semana?",
+          subtitle: `<span class="text--primary">Ali Connors</span> &mdash; Estarei na sua vizinhança fazendo recados neste fim de semana. Você quer sair?`,
         },
         { divider: true, inset: true },
         {
           avatar: "https://cdn.vuetifyjs.com/images/lists/2.jpg",
-          title: 'Summer BBQ <span class="grey--text text--lighten-1">4</span>',
-          subtitle: `<span class="text--primary">to Alex, Scott, Jennifer</span> &mdash; Wish I could come, but I'm out of town this weekend.`,
+          title:
+            'Churrasco de Verão <span class="grey--text text--lighten-1">4</span>',
+          subtitle: `<span class="text--primary">para Alex, Scott, Jennifer</span> &mdash; Eu gostaria de poder ir, mas estou fora da cidade neste fim de semana.`,
         },
         { divider: true, inset: true },
         {
           avatar: "https://cdn.vuetifyjs.com/images/lists/3.jpg",
           title: "Oui oui",
           subtitle:
-            '<span class="text--primary">Sandra Adams</span> &mdash; Do you have Paris recommendations? Have you ever been?',
+            '<span class="text--primary">Sandra Adams</span> &mdash; Você tem recomendações para Paris? Você já esteve lá?',
         },
         { divider: true, inset: true },
         {
           avatar: "https://cdn.vuetifyjs.com/images/lists/4.jpg",
-          title: "Birthday gift",
+          title: "Presente de aniversário",
           subtitle:
-            '<span class="text--primary">Trevor Hansen</span> &mdash; Have any ideas about what we should get Heidi for her birthday?',
+            '<span class="text--primary">Trevor Hansen</span> &mdash; Você tem alguma ideia do que deveríamos dar para a Heidi no aniversário dela?',
         },
         { divider: true, inset: true },
         {
           avatar: "https://cdn.vuetifyjs.com/images/lists/5.jpg",
-          title: "Recipe to try",
+          title: "Receita para experimentar",
           subtitle:
-            '<span class="text--primary">Britta Holt</span> &mdash; We should eat this: Grate, Squash, Corn, and tomatillo Tacos.',
+            '<span class="text--primary">Britta Holt</span> &mdash; Deveríamos comer isso: Tacos de Ralado, Abóbora, Milho e Tomatillo.',
         },
       ],
       isDesktop: false,
@@ -215,6 +241,22 @@ export default {
         }
       });
     },
+
+    menuItemClicked(menu) {
+      if (menu.title === "Configurações") {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Esta página ainda vai ser desenvolvida!",
+        });
+      } else if (menu.title === "Perfil") {
+        this.$router.push("/configuracoes-usuario");
+      } else if (menu.title === "Sair") {
+        this.logout();
+      } else if (menu.title === "Modo Escuro") {
+        this.toggleDarkMode();
+      }
+    },
     openNotificationsMenu() {
       this.notificationsMenu = !this.notificationsMenu;
     },
@@ -232,5 +274,7 @@ export default {
 </script>
 
 <style scoped>
-/* Seus estilos aqui */
+.titulo {
+  color: #2D4F6C;
+}
 </style>

@@ -1,4 +1,4 @@
-import Perfil from '@/models/perfil-model';
+import Perfil from "@/models/perfil-model";
 
 export default class Usuario {
   constructor(obj) {

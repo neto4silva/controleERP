@@ -7,16 +7,11 @@
       <br />
       <v-row>
         <v-col lg="7" cols="12">
-          <v-alert dense text type="success">
-                    Acesso concedigo! Bem vindo ao <strong>Netoworks</strong>
-                </v-alert>
+          <v-alert dense text type="warning">
+            <strong>Você tem novas notificações.</strong>
+          </v-alert>
           <v-row>
-            <v-col
-              lg="6"
-              cols="12"
-              v-for="(item, index) in activityLog"
-              :key="index"
-            >
+            <v-col lg="6" cols="12" v-for="(item, index) in Cards" :key="index">
               <v-card elevation="2" class="rounded-lg">
                 <v-card-text class="d-flex justify-space-between align-center">
                   <div>
@@ -28,7 +23,15 @@
                     :color="item.color"
                     style="border: 3px solid #444"
                   >
-                    <span style="color: white">{{ item.title === 'Total de Produtos' ? totalProdutos : totalClientes }}</span>
+                    <span
+                      style="color: white; font-weight: bold; font-size: 24px"
+                    >
+                      {{
+                        item.title === "Total de Produtos"
+                          ? totalProdutos
+                          : totalClientes
+                      }}
+                    </span>
                   </v-avatar>
                 </v-card-text>
                 <v-card-actions class="d-flex justify-space-between">
@@ -69,7 +72,7 @@
 </template>
 
 <script>
-import GraficosProdutos from "../components/GraficosProdutos.vue";
+import GraficosProdutos from "../components/Graficos/GraficosProdutos.vue";
 import produtoService from "@/services/produto-service";
 import clienteService from "@/services/cliente-service";
 
@@ -80,7 +83,7 @@ export default {
   },
   data() {
     return {
-      activityLog: [
+      Cards: [
         {
           title: "Total de Produtos",
           icon: "mdi-account",
@@ -102,7 +105,7 @@ export default {
           color: "deep-orange darken-1",
         },
       ],
-      totalClientes: 0, 
+      totalClientes: 0,
       totalProdutos: 0,
     };
   },
