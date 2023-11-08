@@ -1,10 +1,12 @@
 <template>
-  <div id="app">
+  <div id="app" >
     <v-app>
+      <transition>
       <v-main>
         <Menu v-if="this.$router.currentRoute.name != 'Login'" />
         <router-view></router-view>
       </v-main>
+    </transition>
     </v-app>
   </div>
 </template>
@@ -21,4 +23,8 @@ export default {
 </script>
 
 <style>
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 </style>
