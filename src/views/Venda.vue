@@ -101,7 +101,6 @@ export default {
         { text: "Quantidade", value: "quantidade" },
         { text: "Valor Unitário", value: "produto.valor" },
         { text: "Subtotal", value: "subtotal" },
-        { text: "Ação", value: "action", sortable: false },
       ],
       editModal: false,
       editedItem: {

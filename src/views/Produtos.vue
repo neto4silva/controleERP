@@ -76,108 +76,11 @@
 </template>
 
 <script>
-import produtoService from "@/services/produto-service";
-import Produto from "@/models/produto-model";
-import conversorData from "@/utils/conversor-data";
-import conversorMonetario from "@/utils/conversor-monetario";
+import ProdutoMixin from "../mixins/produto-mixin";
 
 export default {
   name: "ProdutosCard",
-  filters: {
-    data(data) {
-      return conversorData.aplicarMascaraDataHoraEmDataIso(data);
-    },
-    valor(value) {
-      return conversorMonetario.aplicarMascaraParaRealcomPrefixo(value);
-    },
-  },
-  data() {
-    return {
-      produtos: [],
-      modalAberto: false,
-      Produto: new Produto(),
-      edicao: false,
-      continuarAdicionando: false,
-      imagemProdutoUrl: "https://via.placeholder.com/100",
-    };
-  },
-
-  created() {
-    this.obterTodosOsProdutos();
-  },
-
-  methods: {
-    abrirModalAdicao() {
-      this.Produto = new Produto();
-      this.edicao = false;
-      this.modalAberto = true;
-      this.continuarAdicionando = false;
-    },
-
-    abrirModalEdicao(produto) {
-      this.Produto = new Produto(produto);
-      this.edicao = true;
-      this.modalAberto = true;
-      this.continuarAdicionando = false;
-    },
-
-    adicionarProduto() {
-      produtoService
-        .cadastrar(this.Produto)
-        .then(() => {
-          this.Produto = new Produto();
-          this.obterTodosOsProdutos();
-          if (!this.continuarAdicionando) {
-            this.modalAberto = false;
-          }
-        })
-        .catch((error) => {
-          console.error("Erro ao adicionar o produto:", error);
-        });
-    },
-
-    editarProduto() {
-      produtoService
-        .atualizar(this.Produto)
-        .then(() => {
-          this.Produto = new Produto();
-          this.obterTodosOsProdutos();
-          this.modalAberto = false;
-        })
-        .catch((error) => {
-          console.error("Erro ao editar o produto:", error);
-        });
-    },
-
-    visualizarCards() {
-      this.$router.push("/relatorios-produtos");
-    },
-
-    obterTodosOsProdutos() {
-      produtoService
-        .obterTodos()
-        .then((response) => {
-          this.produtos = response.data.map((p) => new Produto(p));
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-
-    excluirProduto(id) {
-      if (confirm("Deseja excluir este produto?")) {
-        produtoService
-          .deletar(id)
-          .then(() => {
-            this.obterTodosOsProdutos();
-            this.modalAberto = false;
-          })
-          .catch((error) => {
-            console.error("Erro ao excluir o produto:", error);
-          });
-      }
-    },
-  },
+  mixins: [ProdutoMixin],
 };
 </script>
 

@@ -14,14 +14,6 @@
             />
             <v-card-title class="text-h5"
               >{{ cliente.nome }}
-              <v-chip
-                v-if="temCamposEmBranco(cliente)"
-                color="red"
-                text-color="white"
-                class="ml-4"
-              >
-                Campos em branco
-              </v-chip>
             </v-card-title>
             <v-card-text>
               <div><strong>Email:</strong> {{ cliente.email }}</div>
@@ -77,104 +69,10 @@
 </template>
 
 <script>
-import clienteService from "@/services/cliente-service";
-import Cliente from "@/models/cliente-model";
-import conversorData from "@/utils/conversor-data";
+import ClienteMixin from '../mixins/cliente-mixin';
 
 export default {
   name: "ClientesCard",
-  filters: {
-    data(data) {
-      return conversorData.aplicarMascaraDataHoraEmDataIso(data);
-    },
-  },
-  data() {
-    return {
-      clientes: [],
-      modalAberto: false,
-      cliente: new Cliente(),
-      edicao: false,
-      imagemClienteUrl: "https://via.placeholder.com/100",
-    };
-  },
-
-  created() {
-    this.obterTodosOsClientes();
-  },
-
-  methods: {
-    abrirModalAdicao() {
-      this.cliente = new Cliente();
-      this.edicao = false;
-      this.modalAberto = true;
-    },
-
-    abrirModalEdicao(cliente) {
-      this.cliente = new Cliente(cliente);
-      this.edicao = true;
-      this.modalAberto = true;
-    },
-
-    adicionarCliente() {
-      clienteService
-        .cadastrar(this.cliente)
-        .then(() => {
-          this.cliente = new Cliente();
-          this.obterTodosOsClientes();
-          this.modalAberto = false;
-        })
-        .catch((error) => {
-          console.error("Erro ao adicionar o cliente:", error);
-        });
-    },
-
-    editarCliente() {
-      clienteService
-        .atualizar(this.cliente)
-        .then(() => {
-          this.cliente = new Cliente();
-          this.obterTodosOsClientes();
-          this.modalAberto = false;
-        })
-        .catch((error) => {
-          console.error("Erro ao editar o cliente:", error);
-        });
-    },
-
-    obterTodosOsClientes() {
-      clienteService
-        .obterTodos()
-        .then((response) => {
-          this.clientes = response.data.map((c) => new Cliente(c));
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-
-    temCamposEmBranco(cliente) {
-      return (
-        !cliente.nome ||
-        !cliente.email ||
-        !cliente.telefone ||
-        !cliente.cpfOuCnpj ||
-        !cliente.idUsuario
-      );
-    },
-
-    excluirCliente(id) {
-      if (confirm("Deseja excluir este cliente?")) {
-        clienteService
-          .deletar(id)
-          .then(() => {
-            this.obterTodosOsClientes();
-            this.modalAberto = false;
-          })
-          .catch((error) => {
-            console.error("Erro ao excluir o cliente:", error);
-          });
-      }
-    },
-  },
+  mixins: [ClienteMixin],
 };
 </script>

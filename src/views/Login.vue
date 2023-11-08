@@ -1,19 +1,33 @@
 <template>
   <v-container fill-height>
     <v-layout align-center justify-center>
-      <v-flex xs12 sm8 md4>
-        <v-card class="elevation-12 dimensao">
+      <v-flex xs12 sm8 md3>
+        <v-card class="elevation-12">
           <v-card-text class="border-blue">
             <div class="text-center">
-              <img src="@/assets/logo.png" alt="Logo da Empresa" width="300" />
-              {{ usuario.email }}
+              <img src="@/assets/logo.gif" alt="Logo da Empresa" width="300" />
             </div>
             <v-form @submit.prevent="login">
               <v-layout column>
-                <Input label="Email" v-model="usuario.email" />
-                <Input label="Senha" type="password" v-model="usuario.senha" />
+                <Input
+                  label="Email"
+                  v-model="usuario.email"
+                  ref="emailField"
+                  @enter="login"
+                />
+                <Input
+                  label="Senha"
+                  type="password"
+                  v-model="usuario.senha"
+                  ref="passwordField"
+                  @enter="login"
+                />
                 <v-flex xs12>
-                  <Button class="btn" value="Entrar" :callback="login"></Button>
+                  <Button
+                    class="btn mb-16"
+                    value="Entrar"
+                    :callback="login"
+                  ></Button>
                 </v-flex>
               </v-layout>
             </v-form>
@@ -27,6 +41,10 @@
 <script>
 import Button from "@/components/Button/Button.vue";
 import Input from "../components/Input/Input.vue";
+import Usuario from "../models/usuario-model";
+import usuarioService from "../services/usuario-service";
+import Swal from "sweetalert2";
+import utilsStore from "@/utils/storage";
 
 export default {
   name: "LoginPrincipal",
@@ -36,23 +54,36 @@ export default {
   },
   data() {
     return {
-      usuario: {
-        email: "",
-        senha: "",
-      },
+      usuario: new Usuario(),
+      usuarioService: usuarioService,
     };
   },
   methods: {
     login() {
-      if (this.email === "senhas" && this.password === "senhas") {
-        this.$router.push("/");
-      } else {
-        this.$sawl.fire({
-          icon: "error",
-          title: "Credenciais inválidas",
-          text: "Tente novamente.",
+      if (!this.usuario.modeloValidoLogin()) {
+        Swal.fire({
+          icon: "warning",
+          title: "Os campos de Email e Senha são obrigatórios!",
+          confirmButtonColor: "#2D4F6C",
         });
+        return;
       }
+      usuarioService
+        .login(this.usuario.email, this.usuario.senha)
+        .then((response) => {
+          this.usuario = new Usuario(response.data.usuario);
+          utilsStore.salvarUsuarioNaStorage(this.usuario);
+          utilsStore.salvarTokenNaStorage(response.data.token);
+          this.$router.push({ path: "/" });
+        })
+        .catch((error) => {
+          console.log(error);
+          Swal.fire({
+            icon: "error",
+            title: "Credenciais inválidas",
+            text: "Tente novamente.",
+          });
+        });
     },
   },
 };
@@ -60,13 +91,8 @@ export default {
 
 <style scoped>
 .border-blue {
-  border: 1px solid #2d4f6c;
   border-top: 3px solid #2d4f6c;
   padding: 20px;
-}
-
-.dimensao {
-  width: 500px;
 }
 
 .btn {

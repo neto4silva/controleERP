@@ -6,6 +6,7 @@ export default class Usuario {
     this.id = obj.id;
     this.nome = obj.nome;
     this.email = obj.email;
+    this.senha = obj.senha;
     this.foto = obj.foto;
     this.perfil = new Perfil(obj.perfil);
     this.dataCadastro = obj.dataCadastro;

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div data-app>
     <v-navigation-drawer v-model="drawer" app>
       <v-img
         height="140"
@@ -25,24 +25,28 @@
           </v-list-item-icon>
           <v-list-item-title>Dashboard</v-list-item-title>
         </v-list-item>
-        <v-list-item to="/controle-de-clientes">
-          <v-list-item-icon>
-            <v-icon>mdi-account</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>Clientes</v-list-item-title>
-        </v-list-item>
+
         <v-list-item to="/controle-de-produtos">
           <v-list-item-icon>
             <v-icon>mdi-format-list-bulleted</v-icon>
           </v-list-item-icon>
           <v-list-item-title>Produtos</v-list-item-title>
         </v-list-item>
+
+        <v-list-item to="/controle-de-clientes">
+          <v-list-item-icon>
+            <v-icon>mdi-account</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>Clientes</v-list-item-title>
+        </v-list-item>
+
         <v-list-item to="/venda">
           <v-list-item-icon>
             <v-icon>mdi-store</v-icon>
           </v-list-item-icon>
           <v-list-item-title>Venda</v-list-item-title>
         </v-list-item>
+
         <v-subheader>Relatórios</v-subheader>
         <v-list dense>
           <v-list-item link to="/relatorios-clientes">
@@ -51,6 +55,7 @@
             </v-list-item-icon>
             <v-list-item-title>Relatórios de Clientes</v-list-item-title>
           </v-list-item>
+
           <v-list-item link to="/relatorios-produtos">
             <v-list-item-icon>
               <v-icon>mdi-package-variant-closed</v-icon>
@@ -62,7 +67,17 @@
     </v-navigation-drawer>
 
     <v-app-bar app elevate-on-scroll elevation="3">
-      <v-app-bar-nav-icon class="nav-icon" @click="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-img
+        class="nav-icon"
+        :src="
+          modoDark
+            ? require('@/assets/MenuDark.png')
+            : require('@/assets/Menu.png')
+        "
+        @click="drawer = !drawer"
+        max-height="40px"
+        max-width="40px"
+      ></v-img>
       <v-spacer></v-spacer>
 
       <!-- notificações -->
@@ -75,14 +90,20 @@
             v-on="on"
             @click="openNotificationsMenu"
           >
-            <v-badge content="3" color="red" offset-y="10" offset-x="10" class="v-badge">
+            <v-badge
+              content="3"
+              color="red"
+              offset-y="10"
+              offset-x="10"
+              class="v-badge"
+            >
               <v-icon>mdi-bell</v-icon>
             </v-badge>
           </span>
         </template>
         <v-list three-line width="250">
           <template v-for="(item, index) in items">
-            <!--eslint-disable vue/no-v-text-v-html-on-component--> 
+            <!--eslint-disable vue/no-v-text-v-html-on-component-->
             <v-subheader
               v-if="item.header"
               :key="item.header"
@@ -157,9 +178,10 @@
 
 <script>
 import Swal from "sweetalert2";
+import utilsStorage from "@/utils/storage.js";
 
 export default {
-  name: "me-nu",
+  name: "MenuPrincipal",
   data() {
     return {
       drawer: false,
@@ -226,6 +248,7 @@ export default {
     openDrawer() {
       this.drawer = !this.drawer;
     },
+    
     logout() {
       Swal.fire({
         title: "Sair do sistema",
@@ -234,20 +257,33 @@ export default {
         showCancelButton: true,
         confirmButtonText: "Sair",
         cancelButtonText: "Cancelar",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.modoDark = false;
-          this.$router.push("/login");
-        }
-      });
+        confirmButtonColor: "#2D4F6C",
+      })
+        .then((result) => {
+          if (result.isConfirmed) {
+            this.modoDark = false;
+            utilsStorage.removerTokenNaStorage();
+            utilsStorage.removerUsuarioNaStorage();
+            this.$router.push({ path: "/login" });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          this.$swal({
+            icon: "error",
+            title: "Não foi possível sair do sistema",
+            confirmButtonColor: "#263159",
+          });
+        });
     },
 
     menuItemClicked(menu) {
       if (menu.title === "Configurações") {
         Swal.fire({
-          icon: "error",
+          icon: "warning",
           title: "Oops...",
           text: "Esta página ainda vai ser desenvolvida!",
+          confirmButtonColor: "#2D4F6C",
         });
       } else if (menu.title === "Perfil") {
         this.$router.push("/configuracoes-usuario");
@@ -275,6 +311,15 @@ export default {
 
 <style scoped>
 .titulo {
-  color: #2D4F6C;
+  color: #2d4f6c;
+}
+
+.nav-icon {
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.nav-icon:hover {
+  background-color: #e0e0e0; /* Defina a cor desejada para o hover */
 }
 </style>

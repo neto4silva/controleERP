@@ -5,7 +5,7 @@
       :label="label"
       :type="type"
       required
-      @keyup.enter="onSubmit"
+      @keyup.enter="$emit('enter')"
     ></v-text-field>
   </v-flex>
 </template>
