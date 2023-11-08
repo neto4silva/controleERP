@@ -1,5 +1,5 @@
 <template>
-  <div data-app>
+  <div>
     <v-navigation-drawer v-model="drawer" app>
       <v-img
         height="140"
@@ -64,6 +64,7 @@
           </v-list-item>
         </v-list>
       </v-list>
+      <v-img src="@/assets/logo.png" class="move-to-bottom"></v-img>
     </v-navigation-drawer>
 
     <v-app-bar app elevate-on-scroll elevation="3">
@@ -322,4 +323,13 @@ export default {
 .nav-icon:hover {
   background-color: #e0e0e0; /* Defina a cor desejada para o hover */
 }
+
+.move-to-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
 </style>
