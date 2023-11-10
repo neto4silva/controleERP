@@ -9,21 +9,6 @@
             <v-col>
               <Button value="Adicionar" :callback="abrirModalAdicao"></Button>
             </v-col>
-            <v-col v-if="isMobile">
-              <v-select
-                v-model="filtro"
-                :items="tiposFiltro"
-                label="Filtrar por"
-                hide-details
-              ></v-select>
-            </v-col>          
-            <v-col>
-              <v-text-field
-                v-model="pesquisa"
-                label="Pesquisar cliente"
-                hide-details
-              ></v-text-field>
-            </v-col>
           </v-row>
         </v-col>
         <v-col class="text-right">
