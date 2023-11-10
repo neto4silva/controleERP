@@ -12,7 +12,7 @@ let ClienteMixin = {
     return {
       clientes: [],
       pesquisa: "",
-      filtro: "nome", 
+      filtro: "nome",
       tiposFiltro: ["nome", "cpfOuCnpj", "email"],
       headers: [
         {
@@ -59,10 +59,14 @@ let ClienteMixin = {
       if (!this.pesquisa) {
         return this.clientes;
       }
+
       const pesquisaLowerCase = this.pesquisa.toLowerCase();
-      return this.clientes.filter((cliente) =>
-        cliente.nome.toLowerCase().includes(pesquisaLowerCase)
-      );
+
+      return this.clientes.filter((cliente) => {
+        const valorFiltro = cliente[this.filtro].toLowerCase();
+
+        return valorFiltro.includes(pesquisaLowerCase);
+      });
     },
   },
   methods: {
@@ -125,7 +129,7 @@ let ClienteMixin = {
         );
       }
     },
-    
+
     editarCliente() {
       clienteService
         .atualizar(this.cliente)
@@ -145,7 +149,11 @@ let ClienteMixin = {
         })
         .catch((error) => {
           console.error("Erro ao editar o cliente:", error);
-          this.$swal.fire("Erro", "Ocorreu um erro ao editar o cliente", "error");
+          this.$swal.fire(
+            "Erro",
+            "Ocorreu um erro ao editar o cliente",
+            "error"
+          );
         });
     },
 

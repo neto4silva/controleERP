@@ -64,7 +64,14 @@
           </v-list-item>
         </v-list>
       </v-list>
-      <v-img src="@/assets/logo.png" class="move-to-bottom"></v-img>
+      <v-img
+        :src="
+          modoDark
+            ? require('@/assets/logoDark.png')
+            : require('@/assets/logo.png')
+        "
+        class="move-to-bottom"
+      ></v-img>
     </v-navigation-drawer>
 
     <v-app-bar app elevate-on-scroll elevation="3">
@@ -301,19 +308,24 @@ export default {
       }
     },
     redirecionarParaClientes() {
-      if (this.isMobile) {
-        this.$router.push("/clientes");
-      } else {
-        this.$router.push("/controle-de-clientes");
+      const rotaDesejada = this.isMobile
+        ? "/clientes"
+        : "/controle-de-clientes";
+
+      if (this.$route.path !== rotaDesejada) {
+        this.$router.push(rotaDesejada);
       }
     },
     redirecionarParaProdutos() {
-      if (this.isMobile) {
-        this.$router.push("/produtos");
-      } else {
-        this.$router.push("/controle-de-produtos");
+      const rotaDesejada = this.isMobile
+        ? "/produtos"
+        : "/controle-de-produtos";
+
+      if (this.$route.path !== rotaDesejada) {
+        this.$router.push(rotaDesejada);
       }
     },
+
     openNotificationsMenu() {
       this.notificationsMenu = !this.notificationsMenu;
     },

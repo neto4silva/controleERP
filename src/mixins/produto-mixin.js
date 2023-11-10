@@ -66,7 +66,7 @@ let ProdutoMixin = {
       });
       this.edicao = false;
       this.modalAberto = true;
-      this.continuarAdicionando = false;      
+      this.continuarAdicionando = false;
     },
 
     abrirModalEdicao(produto) {
@@ -126,6 +126,13 @@ let ProdutoMixin = {
       produtoService
         .atualizar(this.Produto)
         .then(() => {
+          this.$swal.fire({
+            position: "center",
+            icon: "success",
+            title: "Produto editado com sucesso",
+            showConfirmButton: false,
+            timer: 1000,
+          });
           this.Produto = new Produto();
           this.obterTodosOsProdutos();
           this.modalAberto = false;
@@ -151,7 +158,7 @@ let ProdutoMixin = {
             title: "Erro",
             text: "Erro ao obter produtos: " + error,
             icon: "error",
-            confirmButtonColor: "#2D4F6C"
+            confirmButtonColor: "#2D4F6C",
           });
         });
     },
@@ -171,7 +178,7 @@ let ProdutoMixin = {
             showCancelButton: true,
             confirmButtonText: "Fechar",
             cancelButtonText: "Cancelar",
-            confirmButtonColor: "#2D4F6C"
+            confirmButtonColor: "#2D4F6C",
           })
           .then((result) => {
             if (result.isConfirmed) {

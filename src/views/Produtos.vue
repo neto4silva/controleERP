@@ -11,13 +11,6 @@
             :callback="abrirModalAdicao"
           ></Button>
         </v-col>
-        <v-col>
-          <v-text-field
-            v-model="pesquisa"
-            label="Pesquisar produto"
-            hide-details
-          ></v-text-field>
-        </v-col>
         <v-col class="text-right">
           <v-btn @click="visualizarEmTabela" icon>
             <v-icon>mdi-table</v-icon>
@@ -45,6 +38,7 @@
               </v-chip></v-card-title
             >
             <v-card-text>
+              <div><strong>Quantidade:</strong> {{ produto.quantidadeEstoque }}</div>
               <div><strong>Descrição:</strong> {{ produto.observacao }}</div>
             </v-card-text>
             <v-card-text class="text-h6">
