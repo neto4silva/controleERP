@@ -8,4 +8,30 @@ const router = new VueRouter({
   routes,
 });
 
+router.beforeEach((to, from, next) => {
+  let token = localStorage.getItem("token");
+  if (to.name == "Login") {
+    if (token) {
+      next({ name: "/" });
+    } else {
+      next();
+    }
+  } else if (to.matched.some((rota) => rota.meta.requiresAuth)) {
+    if (token == null) {
+      next({
+        path: "/login",
+        params: { nextUrl: to.fullPath },
+      });
+    } else {
+      next();
+    }
+  } else {
+    if (token == null) {
+      next();
+    } else {
+      next({ name: "/" });
+    }
+  }
+});
+
 export default router;

@@ -3,7 +3,27 @@
     <v-container>
       <h1>Produtos</h1>
       <v-divider class="mb-10 mt-4"></v-divider>
-
+      <v-row class="mb-4" v-if="isMobile">
+        <v-col>
+          <Button
+            data-testid="adicionar-btn"
+            value="Adicionar"
+            :callback="abrirModalAdicao"
+          ></Button>
+        </v-col>
+        <v-col>
+          <v-text-field
+            v-model="pesquisa"
+            label="Pesquisar produto"
+            hide-details
+          ></v-text-field>
+        </v-col>
+        <v-col class="text-right">
+          <v-btn @click="visualizarEmTabela" icon>
+            <v-icon>mdi-table</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
       <v-row>
         <v-col v-for="produto in produtos" :key="produto.id" cols="12" md="3">
           <v-card class="mb-4" @click="abrirModalEdicao(produto)">
@@ -77,10 +97,31 @@
 
 <script>
 import ProdutoMixin from "../mixins/produto-mixin";
+import Button from "../components/Button/Button.vue";
 
 export default {
   name: "ProdutosCard",
+  components: {
+    Button,
+  },
   mixins: [ProdutoMixin],
+  data() {
+    return {
+      isMobile: false,
+    };
+  },
+  mounted() {
+    this.isMobile = window.innerWidth < 600;
+    window.addEventListener("resize", this.verificarTamanhoDaTela);
+  },
+  methods: {
+    verificarTamanhoDaTela() {
+      this.isMobile = window.innerWidth < 600;
+    },
+    visualizarEmTabela() {
+      this.$router.push("/controle-de-produtos");
+    },
+  },
 };
 </script>
 

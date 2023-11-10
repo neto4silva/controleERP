@@ -27,14 +27,10 @@ describe("Componente de Menu", () => {
     });
 
     expect(wrapper.vm.drawer).toBe(false);
-
     const botaoMenu = wrapper.find(".nav-icon");
     await botaoMenu.trigger("click");
-
     expect(wrapper.vm.drawer).toBe(true);
-
     await botaoMenu.trigger("click");
-
     expect(wrapper.vm.drawer).toBe(false);
   });
 
@@ -46,10 +42,8 @@ describe("Componente de Menu", () => {
     });
 
     expect(wrapper.vm.notificationsMenu).toBe(false);
-
     const iconeNotificacoes = wrapper.find(".v-badge");
     await iconeNotificacoes.trigger("click");
-
     expect(wrapper.vm.notificationsMenu).toBe(true);
   });
 });

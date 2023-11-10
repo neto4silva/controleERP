@@ -133,4 +133,8 @@ export default {
 .table-with-pointer tbody tr:hover {
   cursor: pointer;
 }
+
+.table-with-pointer th {
+  background-color: rgba(45, 79, 108, 0.5);
+}
 </style>
