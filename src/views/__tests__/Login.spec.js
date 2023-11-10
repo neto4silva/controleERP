@@ -10,10 +10,10 @@ describe("LoginPrincipal", () => {
   let router;
 
   beforeEach(() => {
-    router = new VueRouter(); // Crie uma instância do Vue Router
+    router = new VueRouter(); 
     wrapper = mount(LoginPrincipal, {
       localVue,
-      router, // Passe a instância do Vue Router
+      router,
     });
   });
 
@@ -31,7 +31,7 @@ describe("LoginPrincipal", () => {
 
   it("realiza o login e redireciona em caso de login bem-sucedido", async () => {
     const loginSpy = jest.spyOn(wrapper.vm, "login").mockImplementation(() => {
-      // Simula um login bem-sucedido
+     
       wrapper.vm.usuario.email = "test@example.com";
       wrapper.vm.usuario.senha = "password123";
     });

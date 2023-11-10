@@ -61,15 +61,9 @@
 export default {
   name: "ConfiguracoesUsuario",
   methods: {
-    editarNome() {
-      // Adicione a lógica para editar o nome do usuário aqui
-    },
-    editarEmail() {
-      // Adicione a lógica para editar o e-mail do usuário aqui
-    },
-    editarSenha() {
-      // Adicione a lógica para editar a senha do usuário aqui
-    },
+    editarNome() {},
+    editarEmail() {},
+    editarSenha() {},
   },
 };
 </script>

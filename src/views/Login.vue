@@ -24,10 +24,11 @@
                 />
                 <v-flex xs12>
                   <Button
-                    class="btn mb-16"
+                    class="btn mb-8"
                     value="Entrar"
                     :callback="login"
                   ></Button>
+                  <span>Ainda não tem login ? <a>Cadastre-se</a></span>
                 </v-flex>
               </v-layout>
             </v-form>
@@ -91,11 +92,15 @@ export default {
 
 <style scoped>
 .border-blue {
-  border-top: 3px solid #2d4f6c;
+  border-top: 3px solid #2D4F6C;
   padding: 20px;
 }
 
 .btn {
   width: 100%;
+}
+
+a {
+  color: #2D4F6C;
 }
 </style>

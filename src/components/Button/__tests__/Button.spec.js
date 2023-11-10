@@ -33,7 +33,6 @@ describe("ButtonComponent", () => {
       },
     });
 
-    // Verifique a cor e o estilo do botão
     expect(wrapper.find(".button").attributes("color")).toBe("#2D4F6C");
     expect(wrapper.find(".button").attributes("dark")).toBe("true");
   });

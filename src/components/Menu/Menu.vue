@@ -26,14 +26,14 @@
           <v-list-item-title>Dashboard</v-list-item-title>
         </v-list-item>
 
-        <v-list-item to="/controle-de-produtos">
+        <v-list-item @click="redirecionarParaProdutos">
           <v-list-item-icon>
             <v-icon>mdi-format-list-bulleted</v-icon>
           </v-list-item-icon>
           <v-list-item-title>Produtos</v-list-item-title>
         </v-list-item>
 
-        <v-list-item to="/controle-de-clientes">
+        <v-list-item @click="redirecionarParaClientes">
           <v-list-item-icon>
             <v-icon>mdi-account</v-icon>
           </v-list-item-icon>
@@ -241,15 +241,21 @@ export default {
         this.$vuetify.theme.dark = value;
       },
     },
+    isMobile() {
+      return this.detectarDispositivoMobile();
+    },
   },
   methods: {
+    detectarDispositivoMobile() {
+      return window.innerWidth < 768;
+    },
     toggleDarkMode() {
       this.modoDark = !this.modoDark;
     },
     openDrawer() {
       this.drawer = !this.drawer;
     },
-    
+
     logout() {
       Swal.fire({
         title: "Sair do sistema",
@@ -262,14 +268,14 @@ export default {
       })
         .then((result) => {
           if (result.isConfirmed) {
-            this.modoDark = false;
             utilsStorage.removerTokenNaStorage();
             utilsStorage.removerUsuarioNaStorage();
+            this.modoDark = false;
             this.$router.push({ path: "/login" });
           }
         })
         .catch((error) => {
-          console.log(error);
+          console.error(error);
           this.$swal({
             icon: "error",
             title: "Não foi possível sair do sistema",
@@ -292,6 +298,20 @@ export default {
         this.logout();
       } else if (menu.title === "Modo Escuro") {
         this.toggleDarkMode();
+      }
+    },
+    redirecionarParaClientes() {
+      if (this.isMobile) {
+        this.$router.push("/clientes");
+      } else {
+        this.$router.push("/controle-de-clientes");
+      }
+    },
+    redirecionarParaProdutos() {
+      if (this.isMobile) {
+        this.$router.push("/produtos");
+      } else {
+        this.$router.push("/controle-de-produtos");
       }
     },
     openNotificationsMenu() {
@@ -321,7 +341,7 @@ export default {
 }
 
 .nav-icon:hover {
-  background-color: #e0e0e0; /* Defina a cor desejada para o hover */
+  background-color: #e0e0e0;
 }
 
 .move-to-bottom {
@@ -331,5 +351,4 @@ export default {
   right: 0;
   margin: auto;
 }
-
 </style>
