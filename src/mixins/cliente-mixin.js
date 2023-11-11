@@ -12,8 +12,8 @@ let ClienteMixin = {
     return {
       clientes: [],
       pesquisa: "",
-      filtro: "nome",
-      tiposFiltro: ["nome", "cpfOuCnpj", "email"],
+      filtro: "Nome",
+      tiposFiltro: ["Nome", "CPF/CNPJ", "E-mail"],
       headers: [
         {
           text: "ID",
@@ -63,7 +63,21 @@ let ClienteMixin = {
       const pesquisaLowerCase = this.pesquisa.toLowerCase();
 
       return this.clientes.filter((cliente) => {
-        const valorFiltro = cliente[this.filtro].toLowerCase();
+        let valorFiltro = "";
+
+        switch (this.filtro) {
+          case "Nome":
+            valorFiltro = cliente.nome.toLowerCase();
+            break;
+          case "CPF/CNPJ":
+            valorFiltro = cliente.cpfOuCnpj.toLowerCase();
+            break;
+          case "E-mail":
+            valorFiltro = cliente.email.toLowerCase();
+            break;
+          default:
+            break;
+        }
 
         return valorFiltro.includes(pesquisaLowerCase);
       });
